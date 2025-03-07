@@ -1,21 +1,40 @@
-internal static class View {
-    public static Page GetLogin(Window wind) {
-        Page mold = new Page(wind, "CHECKPOINT");
-        Form login = mold.InsertLabel<Form>("Ingrese sus datos a continuación:");
-        login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
-        login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
-        login.InsertChild<Input>("Iniciar sesión", ("type", "submit"));
-        return mold;
+public class CheckPointUI {
+    private Window wind;
+    public CheckPointUI(Window wind) {
+        this.wind = wind;
     }
-    public static Page GetHome(Window wind, Action<Page> action) {
-        Page mold = new Page(wind, "EMPLEADO", action);
-        mold.InsertLabel<Label>("", ("ref", "welcome"));
-        mold.InsertLabel<Label>("", ("ref", "id"));
-        mold.InsertLabel<Label>("", ("ref", "first_name"));
-        mold.InsertLabel<Label>("", ("ref", "last_name"));
-        mold.InsertLabel<Label>("", ("ref", "departament"));
-        mold.InsertLabel<Label>("", ("ref", "position"));
-        mold.InsertLabel<Button>("Cerrar sesión");
-        return mold;
+    
+    public Page GetPage(string name, Action<Page>? action = null){
+        action ??= (page) => { };
+        Page mold = new Page(wind, "CHECKPOINT", action);
+        switch (name) {
+            case "login":
+                mold = new Page(wind, "CHECKPOINT", action);
+                Form login = mold.InsertLabel<Form>("Ingrese sus datos a continuación:", ("id", "loginform"));
+                login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
+                login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
+                login.InsertChild<Input>("Iniciar sesión", ("type", "submit"));
+                return mold;
+            case "home":
+                mold = new Page(wind, "EMPLEADO", action);
+                mold.InsertLabel<Label>("¡Bienvenido!", ("ref", "welcome"));
+                mold.InsertLabel<Label>("ID:", ("ref", "id"));
+                mold.InsertLabel<Label>("Nombre:", ("ref", "first_name"));
+                mold.InsertLabel<Label>("Apellido:", ("ref", "last_name"));
+                mold.InsertLabel<Label>("Sexo:", ("ref", "sex"));
+                mold.InsertLabel<Label>("Fecha de nacimiento:", ("ref", "birthdate"));
+                mold.InsertLabel<Label>("Teléfono:", ("ref", "phone_no"));
+                mold.InsertLabel<Label>("Correo electrónico:", ("ref", "email"));
+                mold.InsertLabel<Label>("Dirección:", ("ref", "address"));
+                mold.InsertLabel<Label>("Fecha de contratación:", ("ref", "hiredate"));
+                mold.InsertLabel<Label>("Departamento:", ("ref", "workdept"));
+                mold.InsertLabel<Label>("Trabajo:", ("ref", "job"));
+                mold.InsertLabel<Label>("Salario:", ("ref", "salary"));
+                mold.InsertLabel<Button>("Cerrar sesión", ("id", "logoutbutton"));
+                return mold;
+            default:
+                mold = new Page(wind, "ERROR 404", action);
+                return mold;
+        }
     }
 }
