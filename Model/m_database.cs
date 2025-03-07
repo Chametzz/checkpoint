@@ -118,6 +118,9 @@ internal class ModelEmployees : DB {
     public ModelEmployees() : base () {
         this.table = "EMPLOYEES";
     }
+    public Empleado Login(string email,string password){
+        SQLiteDataReader data = Read($ "EMAIL"= '{email}'AND PASSWORD ='{password}')
+    }
 }
 
 internal class ModelGames : DB {
@@ -139,7 +142,7 @@ internal class ModelPrizes : DB {
 }
 internal class Empleado 
 {
-   public  string Nombre {get; set; }
+   public string Nombre {get; set; }
    public string Apellido {get; set; }
    public int Edad {get; set;}
    public string cargo { get; set;}
