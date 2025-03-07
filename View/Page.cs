@@ -198,6 +198,13 @@ public class Page {
             refs.Add(key, value);
         }
     }
+    public dynamic? GetRef(string key) {
+        if(refs.ContainsKey(key)) {
+            return refs[key];
+        } else {
+            return null;
+        }
+    }
     public void Draw() {
         interactives = [];
         Console.Clear();
