@@ -554,7 +554,7 @@ public class Input : Label {
                         }
 
                         if(form.warnings.Count <= 0) {
-                            form.action(data);
+                            form.action(form, data);
                         } else {
                             page?.wind.RefreshPage();
                         }
@@ -624,7 +624,7 @@ public class Button : Label {
     }
 }
 public class Form : Label {
-    public Action<Dictionary<string, string>> action = (data) => {};
+    public Action<Form, Dictionary<string, string>> action = (form, data) => {};
     public Queue<string> warnings = [];
     public override void Show() {
         Console.ForegroundColor = ConsoleColor.White;
@@ -639,6 +639,12 @@ public class Form : Label {
             }
             Console.ForegroundColor = ConsoleColor.White;
         }
+    }
+    public void SetWarning(string warning) {
+        warnings.Enqueue(warning);
+    }
+    public void SetAction(Action<Form, Dictionary<string, string>> action) {
+        this.action = action;
     }
 }
 public class Table : Label {
