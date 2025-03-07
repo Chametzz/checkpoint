@@ -191,8 +191,12 @@ public class Page {
             Console.CursorVisible = true;
         }
     }
-    public void SetRef(string key, object value) {
-        refs.Add(key, value);
+    public void SetRef(string key, dynamic value) {
+        if(refs.ContainsKey(key)) {
+            refs[key] = value;
+        } else {
+            refs.Add(key, value);
+        }
     }
     public void Draw() {
         interactives = [];

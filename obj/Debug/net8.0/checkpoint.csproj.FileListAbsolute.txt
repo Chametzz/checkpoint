@@ -40,3 +40,4 @@ C:\Users\PC\Documents\projects\checkpoint\obj\Debug\net8.0\refint\checkpoint.dll
 C:\Users\PC\Documents\projects\checkpoint\obj\Debug\net8.0\checkpoint.pdb
 C:\Users\PC\Documents\projects\checkpoint\obj\Debug\net8.0\checkpoint.genruntimeconfig.cache
 C:\Users\PC\Documents\projects\checkpoint\obj\Debug\net8.0\ref\checkpoint.dll
+C:\Users\PC\Documents\projects\checkpoint\obj\Debug\net8.0\checkpoint.sourcelink.json
