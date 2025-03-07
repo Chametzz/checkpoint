@@ -1,6 +1,6 @@
-public class CheckPoinUI {
+public class CheckPointUI {
     private Window wind;
-    public CheckPoinUI(Window wind) {
+    public CheckPointUI(Window wind) {
         this.wind = wind;
     }
     
