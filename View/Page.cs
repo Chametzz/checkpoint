@@ -90,7 +90,7 @@ public class Page {
     public int cursorID = -1;
     public List<(Label input, int line)> interactives;
     //public Dictionary<string, object> data;
-    public Dictionary<string, dynamic> refs;
+    public Dictionary<string, string> refs;
     public Page(Window wind, string title) {
         this.wind = wind;
         this.title = title;
@@ -145,6 +145,19 @@ public class Page {
         }
         return null;
     }
+    public T? SearchLabel<T>(string id) where T : Label {
+            foreach (var label in labels) {
+            if (label.GetProperty("id") == id && label is T) {
+                return (T)label;
+            }
+
+            if (label.childs != null && label.childs.Count > 0) {
+                T? child = SearchLabel<T>(id, label.childs);
+                if (child != null) return child;
+            }
+        }
+        return null;
+    }
     Label? SearchLabel(string id, List<Label> labels) {
         foreach (var label in labels) {
             if(label.GetProperty("id") == id) {
@@ -152,6 +165,19 @@ public class Page {
             }
             if(label.childs != null && label.childs.Count > 0) {
                 Label? child = SearchLabel(id, label.childs);
+                if (child != null) return child;
+            }
+        }
+        return null;
+    }
+    public T? SearchLabel<T>(string id, List<Label> childList) where T : Label {
+        foreach (var label in childList) {
+            if (label.GetProperty("id") == id && label is T) {
+                return (T)label;
+            }
+
+            if (label.childs != null && label.childs.Count > 0) {
+                T? child = SearchLabel<T>(id, label.childs);
                 if (child != null) return child;
             }
         }
@@ -191,18 +217,18 @@ public class Page {
             Console.CursorVisible = true;
         }
     }
-    public void SetRef(string key, dynamic value) {
+    public void SetRef(string key, string value) {
         if(refs.ContainsKey(key)) {
             refs[key] = value;
         } else {
             refs.Add(key, value);
         }
     }
-    public dynamic? GetRef(string key) {
+    public string GetRef(string key) {
         if(refs.ContainsKey(key)) {
             return refs[key];
         } else {
-            return null;
+            return "";
         }
     }
     public void Draw() {
