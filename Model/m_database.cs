@@ -137,3 +137,13 @@ internal class ModelPrizes : DB {
         this.table = "PRIZES";
     }
 }
+internal class Empleado 
+{
+   public  string Nombre {get; set; }
+   public string Apellido {get; set; }
+   public int Edad {get; set;}
+   public string cargo { get; set;}
+   public decimal salario {get; set;}
+   
+
+}
