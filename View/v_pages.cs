@@ -30,10 +30,11 @@ public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira 
                 mold.InsertLabel<Label>("Departamento:", ("ref", "workdept"));
                 mold.InsertLabel<Label>("Trabajo:", ("ref", "job"));
                 mold.InsertLabel<Label>("Salario:", ("ref", "salary"));
-                mold.InsertLabel<Button>("Cerrar sesión", ("id", "logoutbutton"));
+                mold.InsertLabel<Button>("Cerrar sesión", ("name", "LOGOUTBUTTON"));
                 return mold;
             case "admin":
                 mold = wind.InsertPage("ADMINISTRACIÓN", action);
+                mold.InsertLabel<Input>("Seleccione un departamento", ("type", "select"), ("name", "WORKDEP"));
                 return mold;
             case "register employee":
                 mold = wind.InsertPage("REGISTRAR EMPLEADO", action);
