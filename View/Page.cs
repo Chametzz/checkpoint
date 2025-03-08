@@ -133,51 +133,51 @@ public class Page {
         labels.Add(label);
         return label;
     }
-    public Label? SearchLabel(string id) {
+    public Label? SearchLabel(string name) {
         foreach (var label in labels) {
-            if(label.GetProperty("id") == id) {
+            if(label.GetProperty("name") == name) {
                 return label;
             }
             if(label.childs != null && label.childs.Count > 0) {
-                Label? child = SearchLabel(id, label.childs);
+                Label? child = SearchLabel(name, label.childs);
                 if (child != null) return child;
             }
         }
         return null;
     }
-    public T? SearchLabel<T>(string id) where T : Label {
+    public T? SearchLabel<T>(string name) where T : Label {
             foreach (var label in labels) {
-            if (label.GetProperty("id") == id && label is T) {
+            if (label.GetProperty("name") == name && label is T) {
                 return (T)label;
             }
 
             if (label.childs != null && label.childs.Count > 0) {
-                T? child = SearchLabel<T>(id, label.childs);
+                T? child = SearchLabel<T>(name, label.childs);
                 if (child != null) return child;
             }
         }
         return null;
     }
-    Label? SearchLabel(string id, List<Label> labels) {
+    Label? SearchLabel(string name, List<Label> labels) {
         foreach (var label in labels) {
-            if(label.GetProperty("id") == id) {
+            if(label.GetProperty("name") == name) {
                 return label;
             }
             if(label.childs != null && label.childs.Count > 0) {
-                Label? child = SearchLabel(id, label.childs);
+                Label? child = SearchLabel(name, label.childs);
                 if (child != null) return child;
             }
         }
         return null;
     }
-    public T? SearchLabel<T>(string id, List<Label> childList) where T : Label {
+    T? SearchLabel<T>(string name, List<Label> childList) where T : Label {
         foreach (var label in childList) {
-            if (label.GetProperty("id") == id && label is T) {
+            if (label.GetProperty("name") == name && label is T) {
                 return (T)label;
             }
 
             if (label.childs != null && label.childs.Count > 0) {
-                T? child = SearchLabel<T>(id, label.childs);
+                T? child = SearchLabel<T>(name, label.childs);
                 if (child != null) return child;
             }
         }

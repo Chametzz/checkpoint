@@ -10,7 +10,7 @@ public class CheckPointUI {
         switch (name) {
             case "login":
                 mold = wind.InsertPage("CHECKPOINT", action);
-                Form login = mold.InsertLabel<Form>("Ingrese sus datos a continuación:", ("id", "loginform"));
+                Form login = mold.InsertLabel<Form>("Ingrese sus datos a continuación:", ("name", "LOGINFORM"));
                 login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
                 login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
                 login.InsertChild<Input>("Iniciar sesión", ("type", "submit"));
@@ -31,6 +31,26 @@ public class CheckPointUI {
                 mold.InsertLabel<Label>("Trabajo:", ("ref", "job"));
                 mold.InsertLabel<Label>("Salario:", ("ref", "salary"));
                 mold.InsertLabel<Button>("Cerrar sesión", ("id", "logoutbutton"));
+                return mold;
+            case "admin":
+                mold = wind.InsertPage("ADMINISTRACIÓN", action);
+                return mold;
+            case "register employee":
+                mold = wind.InsertPage("REGISTRAR EMPLEADO", action);
+                Form register = mold.InsertLabel<Form>("Rellena los campos del empleado:", ("name", "REGISTERFORM"));
+                register.InsertChild<Input>("Nombre(s):", ("type", "text"), ("name", "FIRSTNAME"), ("required", "true"));
+                register.InsertChild<Input>("Apellido(s):", ("type", "text"), ("name", "LASTNAME"), ("required", "true"));
+                Input sex = register.InsertChild<Input>("Sexo:", ("type", "select"), ("name", "SEX"), ("required", "true"));
+                sex.InsertChild<Label>("HOMBRE", ("value", "HOMBRE"));
+                sex.InsertChild<Label>("MUJER", ("value", "MUJER"));
+                sex.InsertChild<Label>("MUJER", ("value", "OTRO"));
+                register.InsertChild<Input>("Fecha de nacimiento:", ("type", "text"), ("name", "BIRTHDATE"), ("required", "true"));
+                register.InsertChild<Input>("Número de teléfono:", ("type", "number"), ("name", "PHONENO"), ("required", "true"));
+                register.InsertChild<Input>("Correo electrónico:", ("type", "text"), ("name", "EMAIL"), ("required", "true"));
+                register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADRESS"), ("required", "true"));
+                register.InsertChild<Input>("Departamento:", ("type", "select"), ("name", "WORKDEPT"), ("required", "true"));
+                register.InsertChild<Input>("Puesto:", ("type", "select"), ("name", "JOB"), ("required", "true"));
+                register.InsertChild<Input>("Registrar", ("type", "submit"));
                 return mold;
             default:
                 mold = wind.InsertPage("ERROR 404", action);
