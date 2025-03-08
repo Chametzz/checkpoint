@@ -1,4 +1,5 @@
 using System.Data.SQLite;
+using System.Collections.Generic;
 internal class DB{
     private static string dbPath = "";
     private static string dsn = "";
@@ -83,11 +84,29 @@ internal class DB{
         ExecuteQuery(query);
     }
 
-    public SQLiteDataReader Read(string condition = "1=1") {
+    public List<Dictionary<string, dynamic?>> Read(string condition = "1=1")
+    {
         string query = $"SELECT * FROM {table} WHERE {condition}";
         connection.Open();
         var command = new SQLiteCommand(query, connection);
-        return command.ExecuteReader();
+
+        using (var reader = command.ExecuteReader())
+        {
+            var result = new List<Dictionary<string, dynamic?>>();
+
+            while (reader.Read())
+            {
+                var row = new Dictionary<string, dynamic?>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    string columnName = reader.GetName(i);
+                    dynamic? value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                    row[columnName] = value;
+                }
+                result.Add(row);
+            }
+            return result;
+        }
     }
 
     public void Update(string setColumns, string condition) {
@@ -118,8 +137,9 @@ internal class ModelEmployees : DB {
     public ModelEmployees() : base () {
         this.table = "EMPLOYEES";
     }
-    public Empleado Login(string email,string password){
-        SQLiteDataReader data = Read($ "EMAIL"= '{email}'AND PASSWORD ='{password}')
+    public Empleado? Login(string email,string password){
+        //SQLiteDataReader data = Read($"EMAIL = '{email}'AND PASSWORD ='{password}'");
+        return null;
     }
 }
 
