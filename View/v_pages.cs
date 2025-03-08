@@ -1,5 +1,5 @@
-public class CheckPointUI {
-    public Window wind;
+public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira un objeto de tipo wind, crea uno nuevo, después accede a las vistas usando CreatePage("nombre", () => {})
+    public Window wind; //Al final accede a su wind y ejecuta el wind.Execute()
     public CheckPointUI(Window wind) {
         this.wind = wind;
     }
