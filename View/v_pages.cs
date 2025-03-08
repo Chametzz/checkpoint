@@ -1,20 +1,19 @@
-public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira un objeto de tipo wind, crea uno nuevo, después accede a las vistas usando CreatePage("nombre", () => {})
+public class CheckPointUI
+{ //Crea un objeto de esto en CheckPointUI, te pedira un objeto de tipo wind, crea uno nuevo, después accede a las vistas usando CreatePage("nombre", () => {})
     public Window wind; //Al final accede a su wind y ejecuta el wind.Execute()
-    public CheckPointUI(Window wind) {
+    public CheckPointUI(Window wind)
+    {
         this.wind = wind;
     }
-    
-    public Page CreatePage(string name, Action<Page>? action = null){
+
+    public Page CreatePage(string name, Action<Page>? action = null)
+    {
         action ??= (page) => { };
         Page mold;
-        switch (name) {
+        switch (name)
+        {
             case "login":
-                mold = wind.InsertPage("CHECKPOINT", action);
-                Form login = mold.InsertLabel<Form>("Ingrese sus datos a continuación:", ("name", "LOGINFORM"));
-                login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
-                login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
-                login.InsertChild<Input>("Iniciar sesión", ("type", "submit"));
-                return mold;
+                return wind.InsertPage(new LoginPage(wind, "CHECKPOINT", action));
             case "home":
                 mold = wind.InsertPage("EMPLEADO", action);
                 mold.InsertLabel<Label>("¡Bienvenido!", ("ref", "welcome"));
@@ -38,7 +37,7 @@ public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira 
                 return mold;
             case "register employee":
                 mold = wind.InsertPage("REGISTRAR EMPLEADO", action);
-                Form register = mold.InsertLabel<Form>("Rellena los campos del empleado:", ("name", "REGISTERFORM"));
+                Form register = mold.InsertLabel<Form>("Registre los campos del aspirante:", ("name", "REGISTERFORM"));
                 register.InsertChild<Input>("Nombre(s):", ("type", "text"), ("name", "FIRSTNAME"), ("required", "true"));
                 register.InsertChild<Input>("Apellido(s):", ("type", "text"), ("name", "LASTNAME"), ("required", "true"));
                 Input sex = register.InsertChild<Input>("Sexo:", ("type", "select"), ("name", "SEX"), ("required", "true"));
@@ -51,7 +50,12 @@ public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira 
                 register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADRESS"), ("required", "true"));
                 register.InsertChild<Input>("Departamento:", ("type", "select"), ("name", "WORKDEPT"), ("required", "true"));
                 register.InsertChild<Input>("Puesto:", ("type", "select"), ("name", "JOB"), ("required", "true"));
+                register.InsertChild<Input>("Contraseña:", ("type", "select"), ("name", "PASSWORD"), ("required", "true"));
+                register.InsertChild<Input>("Contraseña:", ("type", "select"), ("name", "VERIFYPASS"), ("required", "true"));
                 register.InsertChild<Input>("Registrar", ("type", "submit"));
+                return mold;
+            case "edit employee":
+                mold = wind.InsertPage("EDITAR EMPLEADO", action);
                 return mold;
             default:
                 mold = wind.InsertPage("ERROR 404", action);
@@ -59,3 +63,4 @@ public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira 
         }
     }
 }
+
