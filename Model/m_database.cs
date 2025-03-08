@@ -1,6 +1,6 @@
 using System.Data.SQLite;
 using System.Collections.Generic;
-internal class DB{
+public class DB{
     private static string dbPath = "";
     private static string dsn = "";
     protected SQLiteConnection connection;
@@ -131,42 +131,4 @@ internal class DB{
             connection.Close();
         }
     }
-}
-
-internal class ModelEmployees : DB {
-    public ModelEmployees() : base () {
-        this.table = "EMPLOYEES";
-    }
-    public Empleado? Login(string email,string password){
-        //SQLiteDataReader data = Read($"EMAIL = '{email}'AND PASSWORD ='{password}'");
-        return null;
-    }
-}
-
-internal class ModelGames : DB {
-    public ModelGames() : base () {
-        this.table = "GAMES";
-    }
-}
-
-internal class ModelPlaycards : DB {
-    public ModelPlaycards() : base () {
-        this.table = "PLAYCARDS";
-    }
-}
-
-internal class ModelPrizes : DB {
-    public ModelPrizes() : base () {
-        this.table = "PRIZES";
-    }
-}
-internal class Empleado 
-{
-   public string Nombre {get; set; }
-   public string Apellido {get; set; }
-   public int Edad {get; set;}
-   public string cargo { get; set;}
-   public decimal salario {get; set;}
-   
-
 }
