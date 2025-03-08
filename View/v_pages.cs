@@ -43,11 +43,11 @@ public class CheckPointUI { //Crea un objeto de esto en CheckPointUI, te pedira 
                 Input sex = register.InsertChild<Input>("Sexo:", ("type", "select"), ("name", "SEX"), ("required", "true"));
                 sex.InsertChild<Label>("HOMBRE", ("value", "HOMBRE"));
                 sex.InsertChild<Label>("MUJER", ("value", "MUJER"));
-                sex.InsertChild<Label>("MUJER", ("value", "OTRO"));
+                sex.InsertChild<Label>("OTRO", ("value", "OTRO"));
                 register.InsertChild<Input>("Fecha de nacimiento:", ("type", "text"), ("name", "BIRTHDATE"), ("required", "true"));
                 register.InsertChild<Input>("Número de teléfono:", ("type", "number"), ("name", "PHONENO"), ("required", "true"));
                 register.InsertChild<Input>("Correo electrónico:", ("type", "text"), ("name", "EMAIL"), ("required", "true"));
-                register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADRESS"), ("required", "true"));
+                register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADDRESS"), ("required", "true"));
                 register.InsertChild<Input>("Departamento:", ("type", "select"), ("name", "WORKDEPT"), ("required", "true"));
                 register.InsertChild<Input>("Puesto:", ("type", "select"), ("name", "JOB"), ("required", "true"));
                 register.InsertChild<Input>("Registrar", ("type", "submit"));
