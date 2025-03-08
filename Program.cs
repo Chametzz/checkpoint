@@ -15,10 +15,12 @@ Page Login = layout.CreatePage("login", (page) => {});
 
 Login.SearchLabel<Form>("LOGINFORM").SetAction((form, data) => {
 
-    form.SetWarning("FUNCIONA");
+    Employee emp = Patata.Login(data["USERNAME"], data["PASSWORD"]);
 
+    form.SetWarning("FUNCIONA");
 });
-Employee emp = Patata.Login(data["USERNAME"], data["PASSWORD"]);
+
+Page Home = layout.CreatePage("home", (page) => { });
 
 
 layout.wind.Execute();
