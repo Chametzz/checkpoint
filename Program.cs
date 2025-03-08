@@ -1,4 +1,4 @@
-﻿using SQLitePCL;
+using SQLitePCL;
 using System;
 using System.Data;
 using System.Linq;
@@ -24,4 +24,3 @@ Page Home = layout.CreatePage("home", (page) => { });
 
 
 layout.wind.Execute();
-Window wind = new Window();

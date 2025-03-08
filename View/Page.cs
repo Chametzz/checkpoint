@@ -91,7 +91,7 @@ public class Page {
     public List<(Label input, int line)> interactives;
     //public Dictionary<string, object> data;
     public Dictionary<string, string> refs;
-    public Page(Window wind, string title) {
+    /*public Page(Window wind, string title) {
         this.wind = wind;
         this.title = title;
         this.toLoad = null;
@@ -100,8 +100,9 @@ public class Page {
         interactives = [];
         refs = [];
         SetCursorID(-1);
-    }
-    public Page(Window wind, string title, Action<Page> toLoad) {
+    }*/
+    public Page(Window wind, string title, Action<Page>? toLoad = null) {
+        toLoad ??= (page) => {};
         this.wind = wind;
         this.title = title;
         this.toLoad = toLoad;
