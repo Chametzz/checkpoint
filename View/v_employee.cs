@@ -1,7 +1,6 @@
 public class LoginPage : Page
 {
     public LoginPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
-        SetTitle("CHECKPOINT");
         Form login = InsertLabel<Form>("Ingrese sus datos a continuación:", ("name", "LOGINFORM"));
         login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
         login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
