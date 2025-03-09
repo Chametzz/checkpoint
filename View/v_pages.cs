@@ -9,7 +9,6 @@ public class CheckPointUI
     public Page CreatePage(string name, Action<Page>? action = null)
     {
         action ??= (page) => { };
-        Page mold;
         switch (name)
         {
             case "login":
@@ -19,13 +18,13 @@ public class CheckPointUI
             case "admin":
                 return wind.InsertPage(new AdminPage(wind, "ADMINISTRACIÓN", action));
             case "register employee":
-                return wind.InsertPage(new AdminPage(wind, "REGISTRAR EMPLEADO", action));
+                return wind.InsertPage(new RegEmpPage(wind, "REGISTRAR EMPLEADO", action));
             case "edit employee":
-                mold = wind.InsertPage("EDITAR EMPLEADO", action);
-                return mold;
+                return wind.InsertPage(new EditEmpPage(wind, "EDITAR EMPLEADO", action));
+            case "delete employee":
+                return wind.InsertPage(new DelEmpPage(wind, "ELIMINAR EMPLEADO", action));
             default:
-                mold = wind.InsertPage("ERROR 404", action);
-                return mold;
+                return wind.InsertPage("ERROR 404", action);
         }
     }
 }
