@@ -11,20 +11,24 @@ DB.SETDATABASE(Path.Combine(Directory.GetCurrentDirectory(), "database.db"));
 ModelEmployees Patata = new ModelEmployees();
 CheckPointUI layout = new CheckPointUI(new Window());
 Employee Empleado = null;
+Page Home = null;
 
 
 Page Login = layout.CreatePage("login", (page) => {});
 
 Login.SearchLabel<Form>("LOGINFORM").SetAction((form, data) => {
 
-    Employee emp = Patata.Login(data["USERNAME"], data["PASSWORD"]);
-
-    form.SetWarning("FUNCIONA");
-
+    Empleado = Patata.Login(data["USERNAME"], data["PASSWORD"]);
+    if ( Empleado != null) {
+        form.page.wind?.LoadPage(Home);
+    }
+    else {
+        form.SetWarning("Los datos no coinciden.");
+    }
 });
 
 
-Page Home = layout.CreatePage("home", (page) => {
+Home = layout.CreatePage("home", (page) => {
     page.SetRef("welcome", $"Bienvenido {Empleado.Firstname}");
     page.SetRef("id", $"ID:{Empleado.Id}");
     page.SetRef("first_name", $"Nombre:{Empleado.Firstname}");
@@ -39,8 +43,6 @@ Page Home = layout.CreatePage("home", (page) => {
     page.SetRef("job", $"Trabajo:{Empleado.Job}");
     page.SetRef("salary", $"Salario:{Empleado.Salary}");
 });
-
-
 
 
 
