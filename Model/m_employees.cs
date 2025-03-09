@@ -2,17 +2,31 @@ public class ModelEmployees : DB {
 
     public ModelEmployees() : base () {
         this.table = "EMPLOYEES";
+        Console.WriteLine(dsn);
+        Console.WriteLine(dbPath);
         CreateAdminIfEmpty();
     }
     public Employee? Login(string email,string password){
         var data = Read($"EMAIL = '{email}'AND PASSWORD ='{password}'");
         if (data.Count>0){
             var emp =data[0];
-            return new Employee(emp["ID"], emp["FIRSTNAME"], emp["LASTNAME"], emp["SEX"], emp["BIRTHDATE"], emp["PHONENO"],
-            emp["EMAIL"], emp["ADRESS"], emp["HIREDATE"], emp["WORKDEPT"], emp["JOB"], emp["SALARY"]);
+            return new Employee(
+                Convert.ToInt32(emp["ID"]),
+                emp["FIRSTNAME"]?.ToString() ?? "",
+                emp["LASTNAME"]?.ToString() ?? "",
+                emp["SEX"]?.ToString() ?? "",
+                emp["BIRTHDATE"]?.ToString() ?? "",
+                emp["PHONENO"]?.ToString() ?? "",
+                emp["EMAIL"]?.ToString() ?? "",
+                emp["ADDRESS"]?.ToString() ?? "",
+                emp["HIREDATE"]?.ToString() ?? "",
+                emp["WORKDEPT"]?.ToString() ?? "",
+                emp["JOB"]?.ToString() ?? "",
+                Convert.ToSingle(emp["SALARY"] ?? 0)
+            );
         }
-            return null;
-        }
+        return null;
+    }
     public void CreateAdminIfEmpty() {
         var employees = Read("1=1");
         if (employees.Count == 0) {

@@ -356,7 +356,7 @@ public class Label {
 
     public virtual void Show() {
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine(page != null && GetProperty("ref") == ""? page.refs[properties["ref"]]: content);
+        Console.WriteLine(page != null && page.GetRef(GetProperty("ref")) != ""? page.refs[properties["ref"]]: content);
         foreach (Label child in childs) {
                 child.Show();
             }

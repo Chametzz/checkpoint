@@ -1,11 +1,13 @@
 using System.Data.SQLite;
 using System.Collections.Generic;
 public class DB{
-    private static string dbPath = "";
-    private static string dsn = "";
+    protected static string dbPath = "";
+    protected static string dsn = "";
     protected SQLiteConnection connection;
     protected string table = "";
-    public DB() {        
+    public DB() {
+        Console.WriteLine(dbPath);
+        Console.WriteLine(dsn);
         connection = new SQLiteConnection(dsn);
     }
 
@@ -78,35 +80,34 @@ public class DB{
             }
         }
     }
-
+    
     public void Create(string columns, string values) {
         string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
         ExecuteQuery(query);
     }
 
-    public List<Dictionary<string, dynamic?>> Read(string condition = "1=1")
-    {
+    public List<Dictionary<string, object?>> Read(string condition = "1=1") {
         string query = $"SELECT * FROM {table} WHERE {condition}";
-        connection.Open();
-        var command = new SQLiteCommand(query, connection);
+        var result = new List<Dictionary<string, object?>>();
 
-        using (var reader = command.ExecuteReader())
-        {
-            var result = new List<Dictionary<string, dynamic?>>();
+        using (var connection = new SQLiteConnection(dsn)) {
+            connection.Open();
+            using (var command = new SQLiteCommand(query, connection))
+            using (var reader = command.ExecuteReader()) {
+                while (reader.Read()) {
+                    var row = new Dictionary<string, object?>();
 
-            while (reader.Read())
-            {
-                var row = new Dictionary<string, dynamic?>();
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    string columnName = reader.GetName(i);
-                    dynamic? value = reader.IsDBNull(i) ? null : reader.GetValue(i);
-                    row[columnName] = value;
+                    for (int i = 0; i < reader.FieldCount; i++) {
+                        string columnName = reader.GetName(i);
+                        object? value = reader.IsDBNull(i) ? null : reader.GetValue(i);
+                        row[columnName] = value;
+                    }
+                    
+                    result.Add(row);
                 }
-                result.Add(row);
             }
-            return result;
         }
+        return result;
     }
 
     public void Update(string setColumns, string condition) {
