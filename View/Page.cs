@@ -388,6 +388,12 @@ public class Label {
 public class Input : Label {
     public Action<Label, Page>? onChange = null;
     public Action<Label, Page>? action = null;
+    public void SetAction(Action<Label, Page> action) {
+        this.action = action;
+    }
+    public void SetOnChange(Action<Label, Page> onChange) {
+        this.onChange = onChange;
+    }
     public override void Start() {
         if(!properties.ContainsKey("value")) properties.Add("value", "");
         if(!properties.ContainsKey("type")) properties.Add("type", "");
@@ -649,7 +655,7 @@ public class Input : Label {
                     formdate.action = (form, data) => {
                         string date = $"{data["AGE"].PadLeft(4, '0')}-{data["MONTH"]}-{data["DAY"]}";
                         if(DateTime.TryParse(date, out DateTime result)) {
-                            SetProperty("value", result.ToString());
+                            SetProperty("value", result.ToString("yyyy-MM-dd HH:mm:ss"));
                             page.wind?.BackLoadPage();
                         } else {
                             form.SetWarning("La fecha ingresada no es válida. Por favor, verifique los datos.");
@@ -697,7 +703,7 @@ public class Input : Label {
                     formdate.action = (form, data) => {
                         string date = $"{data["AGE"].PadLeft(4, '0')}-{data["MONTH"]}-{data["DAY"]} {data["HOUR"]}:{data["MIN"]}:{data["SEC"]}";
                         if(DateTime.TryParse(date, out DateTime result)) {
-                            SetProperty("value", result.ToString());
+                            SetProperty("value", result.ToString("yyyy-MM-dd HH:mm:ss"));
                             page.wind?.BackLoadPage();
                         } else {
                             form.SetWarning("La fecha ingresada no es válida. Por favor, verifique los datos.");
