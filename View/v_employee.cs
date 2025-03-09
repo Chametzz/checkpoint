@@ -90,3 +90,7 @@ public class DelEmpPage : Page
         delform.InsertChild<Input>("Eliminar", ("type", "submit"));
     }
 }
+
+public class CheckEmployee : DB {
+
+}
