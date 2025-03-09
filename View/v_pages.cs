@@ -12,17 +12,17 @@ public class CheckPointUI
         switch (name)
         {
             case "login":
-                return wind.InsertPage(new LoginPage(wind, "CHECKPOINT", action));
+                return wind.InsertPage(new LoginPage(wind, "login", action));
             case "home":
-                return wind.InsertPage(new HomePage(wind, "EMPLEADO", action));
+                return wind.InsertPage(new HomePage(wind, "home", action));
             case "admin":
-                return wind.InsertPage(new AdminPage(wind, "ADMINISTRACIÓN", action));
+                return wind.InsertPage(new AdminPage(wind, "admin", action));
             case "register employee":
-                return wind.InsertPage(new RegEmpPage(wind, "REGISTRAR EMPLEADO", action));
+                return wind.InsertPage(new RegEmpPage(wind, "register employee", action));
             case "edit employee":
-                return wind.InsertPage(new EditEmpPage(wind, "EDITAR EMPLEADO", action));
+                return wind.InsertPage(new EditEmpPage(wind, "edit employee", action));
             case "delete employee":
-                return wind.InsertPage(new DelEmpPage(wind, "ELIMINAR EMPLEADO", action));
+                return wind.InsertPage(new DelEmpPage(wind, "delete employee", action));
             default:
                 return wind.InsertPage("ERROR 404", action);
         }

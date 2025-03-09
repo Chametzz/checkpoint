@@ -1,25 +1,32 @@
+using System.Text.RegularExpressions;
+
 public class Window {
-    public List<Page> pages;
+    public Dictionary<string, Page> pages;
     public Stack<Page> log;
     public Window() {
         pages = [];
         log = [];
     }
-    public Page InsertPage(string title) {
-        pages.Add(new Page(this, title));
-        return pages[^1];
+    public Page InsertPage(string key) {
+        pages.Add(key, new Page(this, key));
+        return pages[key];
     }
-    public Page InsertPage(string title, Action<Page> toLoad) {
-        pages.Add(new Page(this, title, toLoad));
-        return pages[^1];
+    public Page InsertPage(string key, Action<Page> toLoad) {
+        pages.Add(key, new Page(this, key, toLoad));
+        return pages[key];
     }
     public Page InsertPage(Page page) {
-        pages.Add(page);
-        return pages[^1];
+        pages.Add(page.key, page);
+        return pages[page.key];
     }
 
     public void LoadPage(Page page) {//Carga otra página
         log.Push(page);
+        log.Peek().Load();
+    }
+
+    public void LoadPage(string name) {//Carga otra página
+        log.Push(pages[name]);
         log.Peek().Load();
     }
 
@@ -43,9 +50,14 @@ public class Window {
         log.Pop();
         LoadPage(page);
     }
+
+    public void ReplacePage(string name) {//Reemplaza la página actual por otra
+        log.Pop();
+        LoadPage(name);
+    }
     
     public void Execute() {
-        LoadPage(pages[0]);
+        LoadPage(pages.First().Value);
         bool running = true;
         do{
             ConsoleKeyInfo entry = Console.ReadKey(true);
@@ -83,7 +95,8 @@ public class Window {
 }
 public class Page {
     public Window wind;
-    public string title;
+    public string key;
+    public string title = "TEMPLATE";
     public Action<Page>? toLoad;
     public List<Label> labels;
     public List<Link> links;
@@ -101,16 +114,19 @@ public class Page {
         refs = [];
         SetCursorID(-1);
     }*/
-    public Page(Window wind, string title, Action<Page>? toLoad = null) {
+    public Page(Window wind, string key, Action<Page>? toLoad = null) {
         toLoad ??= (page) => {};
         this.wind = wind;
-        this.title = title;
+        this.key = key;
         this.toLoad = toLoad;
         labels = [];
         links = [];
         interactives = [];
         refs = [];
         SetCursorID(-1);
+    }
+    public void SetTitle(string title) {
+        this.title = title;
     }
     public T InsertLabel<T>(string content) where T : Label, new() {
         T label = new();
@@ -236,6 +252,7 @@ public class Page {
         interactives = [];
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.DarkBlue;
+        Console.BackgroundColor = ConsoleColor.Black;
         Page[] historial = wind.log.ToArray();
         Console.Write("Historial: ");
         for (int i = historial.Length - 1; i >= 0; i--) {
@@ -270,6 +287,7 @@ public class Page {
         Console.WriteLine();
         Console.WriteLine(new string('-', Console.WindowWidth)); // Línea separadora
         //Labels
+        Console.ForegroundColor = ConsoleColor.White;
         foreach (Label label in labels) {
             label.Show();
         }
@@ -591,7 +609,8 @@ public class Input : Label {
             case "select":
                 if (entry.Key == ConsoleKey.Enter && page != null) {
                     if (onChange != null) onChange(this, page);
-                    Page selection = new Page(page.wind, "ELIJA UNA OPCIÓN");
+                    Page selection = new Page(page.wind, "selectinput");
+                    selection.SetTitle("ELIJA UNA OPCIÓN");
                     selection.InsertLabel<Label>("Elija una de las siguientes opciones: ");
                     foreach (var child in childs) {
                         selection.InsertLabel<Button>(child.content).action = () => {
@@ -609,7 +628,8 @@ public class Input : Label {
                 break;
             case "date":
                 if(entry.Key == ConsoleKey.Enter && page != null) {
-                    Page seldate = new Page(page.wind, "SELECCIONE UNA FECHA");
+                    Page seldate = new Page(page.wind, "dateinput");
+                    seldate.SetTitle("SELECCIONE UNA FECHA");
                     Form formdate = seldate.InsertLabel<Form>("Seleccione una fecha:");
                     Input age = formdate.InsertChild<Input>("Año:", ("type", "number"), ("name", "AGE"), ("required", "true"));
                     Input month = formdate.InsertChild<Input>("Mes:", ("type", "select"), ("name", "MONTH"), ("required", "true"));
@@ -642,7 +662,8 @@ public class Input : Label {
                 break;
             case "datetime":
                 if(entry.Key == ConsoleKey.Enter && page != null) {
-                    Page seldate = new Page(page.wind, "SELECCIONE UNA FECHA");
+                    Page seldate = new Page(page.wind, "datetimeinput");
+                    seldate.SetTitle("SELECCIONE UNA FECHA");
                     Form formdate = seldate.InsertLabel<Form>("Seleccione una fecha:");
                     Input age = formdate.InsertChild<Input>("Año:", ("type", "number"), ("name", "AGE"), ("required", "true"));
                     Input month = formdate.InsertChild<Input>("Mes:", ("type", "select"), ("name", "MONTH"), ("required", "true"));
@@ -773,6 +794,10 @@ public class Button : Label {
             action();
         }
     }
+
+    public void SetAction(Action action) {
+        this.action = action;
+    }
 }
 public class Form : Label {
     public Action<Form, Dictionary<string, string>> action = (form, data) => {};
@@ -799,13 +824,25 @@ public class Form : Label {
     }
 }
 public class Table : Label {
-    public string[,] table = new string[0,0];
+    public int columns = 0;
+    private string[,] table = new string[0,0];
     public override void Start() {
         if(!properties.ContainsKey("tab")) properties.Add("tab", "8");
     }
-
+    public Table SetColumns(int columns) {
+        this.columns = columns;
+        return this;
+    }
     public override void Show() {
         if(GetProperty("hide") != "true") {
+            table = new string[columns, (int)MathF.Ceiling((float)childs.Count / columns)];
+            for (int j = 0; j < table.GetLength(1); j++) {
+                for (int i = 0; i < table.GetLength(0); i++) {
+                    int childpos = j * columns + i;
+                    //if(childpos < childs.Count) 
+                    table[i, j] = childpos < childs.Count? childs[childpos].content : "";
+                }
+            }
             int[] columnWidths = new int[table.GetLength(0)];
             int[] rowHeights = new int[table.GetLength(1)];
 
@@ -857,6 +894,71 @@ public class Table : Label {
             }
 
             Console.WriteLine(bottomBorder);
+        }
+    }
+}
+
+public class Selector : Label {
+    public override void Show() {
+        if(GetProperty("hide") != "true") {
+            Console.WriteLine(page != null && GetProperty("ref") != ""? page.refs[properties["ref"]]: content);
+            page?.interactives.Add((this, Console.CursorTop));
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            if(GetProperty("value") == "") {
+                Console.WriteLine("{ ENTER PARA SELECCIONAR }");
+            } else {
+                Console.WriteLine("{ " + properties["value"] + " }");
+            }
+        }
+        Console.ForegroundColor = ConsoleColor.White;
+    }
+    public override void On() {
+        Console.BackgroundColor = ConsoleColor.DarkGray;
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.CursorLeft = 0;
+        string option = "";
+        if(GetProperty("value") == "") {
+            option = "{ ENTER PARA SELECCIONAR }";
+        } else {
+            option = "{ " + properties["value"] + " }";
+        }
+        Console.Write(option);
+        Console.CursorLeft = option.Length;
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+    }
+
+    public override void Off() {
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+        Console.CursorLeft = 0;
+        string option = "";
+        if(GetProperty("value") == "") {
+            option = "{ ENTER PARA SELECCIONAR }";
+        } else {
+            option = "{ " + properties["value"] + " }";
+        }
+        Console.Write(option);
+        Console.CursorLeft = option.Length;
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.DarkGray;
+    }
+
+    public override void Capture(ConsoleKeyInfo entry) {
+        if(entry.Key == ConsoleKey.Enter && page != null) {
+            Page selector = new Page(page.wind, "selectorlabel");
+            selector.SetTitle("SELECCIONE UNA OPCIÓN");
+            foreach (var child in childs) {
+                selector.InsertLabel<Button>(child.content).action = () => {
+                    if(child is Button button) button.action();
+                    if(child.GetProperty("link") != "" && page.wind.pages.ContainsKey(child.properties["link"])) {
+                        page.wind.ReplacePage(child.properties["link"]);
+                    } else {
+                        selector.wind.BackLoadPage();
+                    }
+                };
+            }
+            page.wind.LoadPage(selector);
         }
     }
 }
