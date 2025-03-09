@@ -1,12 +1,31 @@
 public class ModelEmployees : DB {
+
     public ModelEmployees() : base () {
         this.table = "EMPLOYEES";
+        CreateAdminIfEmpty();
     }
     public Employee? Login(string email,string password){
-        //SQLiteDataReader data = Read($"EMAIL = '{email}'AND PASSWORD ='{password}'");
-        return null;
+        var data = Read($"EMAIL = '{email}'AND PASSWORD ='{password}'");
+        if (data.Count>0){
+            var emp =data[0];
+            return new Employee(emp["ID"], emp["FIRSTNAME"], emp["LASTNAME"], emp["SEX"], emp["BIRTHDATE"], emp["PHONENO"],
+            emp["EMAIL"], emp["ADRESS"], emp["HIREDATE"], emp["WORKDEPT"], emp["JOB"], emp["SALARY"]);
+        }
+            return null;
+        }
+    public void CreateAdminIfEmpty() {
+        var employees = Read("1=1");
+        if (employees.Count == 0) {
+            // Si está vacía, insertar un administrador por defecto
+            string columns = "FIRSTNAME, LASTNAME, SEX, BIRTHDATE, PHONENO, EMAIL, PASSWORD, ADDRESS, HIREDATE, WORKDEPT, JOB, SALARY";
+            string values = "'admin', 'admin', 'OTRO', '2000-01-01', '0000000000', 'admin@example.com', '123', '', '2025-01-01', 'admin', 'admin', 0";
+            Create(columns, values);
+        }
+    }
+    
     }
-}
+
+
 public class Employee 
 {
     private int id;
@@ -50,4 +69,5 @@ public class Employee
     public string Workdept => workdept;
     public string Job => job;
     public float Salary => salary;
+
 }
