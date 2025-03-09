@@ -368,6 +368,7 @@ public class Label {
 }
 
 public class Input : Label {
+    public Action<Label, Page>? onChange = null;
     public Action<Label, Page>? action = null;
     public override void Start() {
         if(!properties.ContainsKey("value")) properties.Add("value", "");
@@ -408,6 +409,20 @@ public class Input : Label {
                         Console.WriteLine("< " + properties["value"] + " >");
                     }
                     break;
+                case "date":
+                    if(properties["value"] == "") {
+                        Console.WriteLine("[ ENTER PARA SELECCIONAR FECHA ]");
+                    } else {
+                        Console.WriteLine("[ " + properties["value"] + " ]");
+                    }
+                    break;
+                case "datetime":
+                    if(properties["value"] == "") {
+                        Console.WriteLine("[ ENTER PARA SELECCIONAR FECHA ]");
+                    } else {
+                        Console.WriteLine("[ " + properties["value"] + " ]");
+                    }
+                    break;
                 case "submit":
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine(page != null && GetProperty("ref") != ""? page.refs[properties["ref"]]: content);
@@ -433,6 +448,32 @@ public class Input : Label {
                 }
                 Console.Write(option);
                 Console.CursorLeft = option.Length;
+                break;
+            case "date":
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.CursorLeft = 0;
+                string optDate = "";
+                if(properties["value"] == "") {
+                    optDate = "[ ENTER PARA SELECCIONAR FECHA ]";
+                } else {
+                    optDate = "[ " + properties["value"] + " ]";
+                }
+                Console.Write(optDate);
+                Console.CursorLeft = optDate.Length;
+                break;
+            case "datetime":
+                Console.BackgroundColor = ConsoleColor.DarkGray;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.CursorLeft = 0;
+                string optDateT = "";
+                if(properties["value"] == "") {
+                    optDateT = "[ ENTER PARA SELECCIONAR FECHA ]";
+                } else {
+                    optDateT = "[ " + properties["value"] + " ]";
+                }
+                Console.Write(optDateT);
+                Console.CursorLeft = optDateT.Length;
                 break;
             case "submit":
                 Console.BackgroundColor = ConsoleColor.Yellow;
@@ -462,6 +503,32 @@ public class Input : Label {
                 }
                 Console.Write(option);
                 Console.CursorLeft = option.Length;
+                break;
+            case "date":
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.CursorLeft = 0;
+                string optDate = "";
+                if(properties["value"] == "") {
+                    optDate = "[ ENTER PARA SELECCIONAR FECHA ]";
+                } else {
+                    optDate = "[ " + properties["value"] + " ]";
+                }
+                Console.Write(optDate);
+                Console.CursorLeft = optDate.Length;
+                break;
+            case "datetime":
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.DarkGray;
+                Console.CursorLeft = 0;
+                string optDateT = "";
+                if(properties["value"] == "") {
+                    optDateT = "[ ENTER PARA SELECCIONAR FECHA ]";
+                } else {
+                    optDateT = "[ " + properties["value"] + " ]";
+                }
+                Console.Write(optDateT);
+                Console.CursorLeft = optDateT.Length;
                 break;
             case "submit":
                 Console.BackgroundColor = ConsoleColor.Black;
@@ -523,6 +590,7 @@ public class Input : Label {
                 break;
             case "select":
                 if (entry.Key == ConsoleKey.Enter && page != null) {
+                    if (onChange != null) onChange(this, page);
                     Page selection = new Page(page.wind, "ELIJA UNA OPCIÓN");
                     selection.InsertLabel<Label>("Elija una de las siguientes opciones: ");
                     foreach (var child in childs) {
@@ -537,8 +605,87 @@ public class Input : Label {
                     }
                     NextEnter(entry);
                     page.wind.LoadPage(selection);
+                } 
+                break;
+            case "date":
+                if(entry.Key == ConsoleKey.Enter && page != null) {
+                    Page seldate = new Page(page.wind, "SELECCIONE UNA FECHA");
+                    Form formdate = seldate.InsertLabel<Form>("Seleccione una fecha:");
+                    Input age = formdate.InsertChild<Input>("Año:", ("type", "number"), ("name", "AGE"), ("required", "true"));
+                    Input month = formdate.InsertChild<Input>("Mes:", ("type", "select"), ("name", "MONTH"), ("required", "true"));
+                    Input day = formdate.InsertChild<Input>("Día:", ("type", "select"), ("name", "DAY"), ("required", "true"));
+                    for (int i = 1; i <= 12; i++) {
+                        month.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                    }
+                    day.onChange = (label, page) => {
+                        day.childs.Clear();
+                        if(age.GetProperty("value") != "" && month.GetProperty("value") != null) {
+                            int daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(age.GetProperty("value")), Convert.ToInt32(month.GetProperty("value")));
+                            for (int i = 1; i <= daysInMonth; i++) {
+                                day.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                            }
+                        }
+                    };
+                    formdate.action = (form, data) => {
+                        string date = $"{data["AGE"].PadLeft(4, '0')}-{data["MONTH"]}-{data["DAY"]}";
+                        if(DateTime.TryParse(date, out DateTime result)) {
+                            SetProperty("value", result.ToString());
+                            page.wind?.BackLoadPage();
+                        } else {
+                            form.SetWarning("La fecha ingresada no es válida. Por favor, verifique los datos.");
+                        }
+                    };
+                    formdate.InsertChild<Input>("Aceptar", ("type", "submit"));
+                    NextEnter(entry);
+                    page.wind.LoadPage(seldate);
                 }
-                
+                break;
+            case "datetime":
+                if(entry.Key == ConsoleKey.Enter && page != null) {
+                    Page seldate = new Page(page.wind, "SELECCIONE UNA FECHA");
+                    Form formdate = seldate.InsertLabel<Form>("Seleccione una fecha:");
+                    Input age = formdate.InsertChild<Input>("Año:", ("type", "number"), ("name", "AGE"), ("required", "true"));
+                    Input month = formdate.InsertChild<Input>("Mes:", ("type", "select"), ("name", "MONTH"), ("required", "true"));
+                    Input day = formdate.InsertChild<Input>("Día:", ("type", "select"), ("name", "DAY"), ("required", "true"));
+                    for (int i = 1; i <= 12; i++) {
+                        month.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                    }
+                    day.onChange = (label, page) => {
+                        day.childs.Clear();
+                        if(age.GetProperty("value") != "" && month.GetProperty("value") != null) {
+                            int daysInMonth = DateTime.DaysInMonth(Convert.ToInt32(age.GetProperty("value")), Convert.ToInt32(month.GetProperty("value")));
+                            for (int i = 1; i <= daysInMonth; i++) {
+                                day.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                            }
+                        }
+                    };
+
+                    Input hour = formdate.InsertChild<Input>("Hora:", ("type", "select"), ("name", "HOUR"), ("required", "true"));
+                    for (int i = 1; i < 24; i++) {
+                        hour.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                    }
+                    Input min = formdate.InsertChild<Input>("Minuto:", ("type", "select"), ("name", "MIN"), ("required", "true"));
+                    for (int i = 1; i < 60; i++) {
+                        min.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                    }
+                    Input sec = formdate.InsertChild<Input>("Segundo:", ("type", "select"), ("name", "SEC"), ("required", "true"));
+                    for (int i = 1; i < 60; i++) {
+                        sec.InsertChild<Label>(i < 10? $"0{i}": $"{i}", ("value", i < 10? $"0{i}": $"{i}"));
+                    }
+
+                    formdate.action = (form, data) => {
+                        string date = $"{data["AGE"].PadLeft(4, '0')}-{data["MONTH"]}-{data["DAY"]} {data["HOUR"]}:{data["MIN"]}:{data["SEC"]}";
+                        if(DateTime.TryParse(date, out DateTime result)) {
+                            SetProperty("value", result.ToString());
+                            page.wind?.BackLoadPage();
+                        } else {
+                            form.SetWarning("La fecha ingresada no es válida. Por favor, verifique los datos.");
+                        }
+                    };
+                    formdate.InsertChild<Input>("Aceptar", ("type", "submit"));
+                    NextEnter(entry);
+                    page.wind.LoadPage(seldate);
+                }
                 break;
             case "submit":
                 if (entry.Key == ConsoleKey.Enter) {
@@ -556,6 +703,9 @@ public class Input : Label {
 
                         if(form.warnings.Count <= 0) {
                             form.action(form, data);
+                            if(form.warnings.Count > 0) {
+                                page?.wind.RefreshPage();
+                            }
                         } else {
                             page?.wind.RefreshPage();
                         }
