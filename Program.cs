@@ -20,7 +20,8 @@ Login.SearchLabel<Form>("LOGINFORM").SetAction((form, data) => {
 
     Empleado = Patata.Login(data["USERNAME"], data["PASSWORD"]);
     if ( Empleado != null) {
-        form.page.wind?.LoadPage(Home);
+
+        form.page.wind?.ReplacePage(Home);
     }
     else {
         form.SetWarning("Los datos no coinciden.");
@@ -41,9 +42,14 @@ Home = layout.CreatePage("home", (page) => {
     page.SetRef("hiredate", $"Fecha de Contratacion: {Empleado.Hiredate}");
     page.SetRef("workdept", $"Departamento: {Empleado.Workdept}");
     page.SetRef("job", $"Trabajo: {Empleado.Job}");
+    page.SetRef("job", $"Trabajo: {Empleado.Job}");
     page.SetRef("salary", $"Salario: {Empleado.Salary}");
+
+    //Logaut
+    page.SearchLabel<Button>("LOGOUTBUTTON").action = () => {
+        Empleado = null;
+        page.wind?.ReplacePage(Login);
+
+    };
 });
-
-
-
 layout.wind.Execute();
