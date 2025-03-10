@@ -23,6 +23,8 @@ public class CheckPointUI
                 return wind.InsertPage(new EditEmpPage(wind, "edit employee", action));
             case "delete employee":
                 return wind.InsertPage(new DelEmpPage(wind, "delete employee", action));
+            case "check employee":
+                return wind.InsertPage(new DelEmpPage(wind, "check employee", action));
             default:
                 return wind.InsertPage("ERROR 404", action);
         }
