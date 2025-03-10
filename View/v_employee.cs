@@ -1,6 +1,7 @@
 public class LoginPage : Page
 {
     public LoginPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
+        SetTitle("CHECKPOINT");
         Form login = InsertLabel<Form>("Ingrese sus datos a continuación:", ("name", "LOGINFORM"));
         login.InsertChild<Input>("Usuario:", ("type", "text"), ("name", "USERNAME"), ("required", "true"));
         login.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
@@ -12,6 +13,7 @@ public class HomePage : Page
 {
     public HomePage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("INICIO");
+        InsertLabel<Selector>("Pantallas:", ("name", "SCREENS"));
         InsertLabel<Label>("¡Bienvenido!", ("ref", "welcome"));
         InsertLabel<Label>("ID:", ("ref", "id"));
         InsertLabel<Label>("Nombre:", ("ref", "first_name"));
@@ -50,14 +52,15 @@ public class RegEmpPage : Page
         sex.InsertChild<Label>("HOMBRE", ("value", "HOMBRE"));
         sex.InsertChild<Label>("MUJER", ("value", "MUJER"));
         sex.InsertChild<Label>("OTRO", ("value", "OTRO"));
-        register.InsertChild<Input>("Fecha de nacimiento:", ("type", "text"), ("name", "BIRTHDATE"), ("required", "true"));
+        register.InsertChild<Input>("Fecha de nacimiento:", ("type", "date"), ("name", "BIRTHDATE"), ("required", "true"));
         register.InsertChild<Input>("Número de teléfono:", ("type", "number"), ("name", "PHONENO"), ("required", "true"));
         register.InsertChild<Input>("Correo electrónico:", ("type", "text"), ("name", "EMAIL"), ("required", "true"));
         register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADDRESS"), ("required", "true"));
         register.InsertChild<Input>("Departamento:", ("type", "select"), ("name", "WORKDEPT"), ("required", "true"));
         register.InsertChild<Input>("Puesto:", ("type", "select"), ("name", "JOB"), ("required", "true"));
-        register.InsertChild<Input>("Contraseña:", ("type", "select"), ("name", "PASSWORD"), ("required", "true"));
-        register.InsertChild<Input>("Contraseña:", ("type", "select"), ("name", "VERIFYPASS"), ("required", "true"));
+        register.InsertChild<Input>("Salario:", ("type", "number"), ("decimal", "true"), ("name", "SALARY"), ("required", "true"));
+        register.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "PASSWORD"), ("required", "true"));
+        register.InsertChild<Input>("Contraseña:", ("type", "password"), ("name", "VERIFYPASS"), ("required", "true"));
         register.InsertChild<Input>("Registrar", ("type", "submit"));
     }
 }
@@ -66,7 +69,7 @@ public class EditEmpPage : Page
 {
     public EditEmpPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("EDITAR EMPLEADO");
-        Form register = InsertLabel<Form>("Registre los campos del aspirante:", ("name", "EDITFORM"));
+        Form register = InsertLabel<Form>("Edite los campos del empleado:", ("name", "EDITFORM"));
         register.InsertChild<Input>("Nombre(s):", ("type", "text"), ("name", "FIRSTNAME"), ("required", "true"));
         register.InsertChild<Input>("Apellido(s):", ("type", "text"), ("name", "LASTNAME"), ("required", "true"));
         Input sex = register.InsertChild<Input>("Sexo:", ("type", "select"), ("name", "SEX"), ("required", "true"));

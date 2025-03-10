@@ -830,7 +830,7 @@ public class Form : Label {
     }
 }
 public class Table : Label {
-    public int columns = 0;
+    public int columns = 1;
     private string[,] table = new string[0,0];
     public override void Start() {
         if(!properties.ContainsKey("tab")) properties.Add("tab", "8");
@@ -905,6 +905,10 @@ public class Table : Label {
 }
 
 public class Selector : Label {
+    public Action onChange = () => {};
+    public void SetOnChange(Action onChange) {
+        this.onChange = onChange;
+    }
     public override void Show() {
         if(GetProperty("hide") != "true") {
             Console.WriteLine(page != null && GetProperty("ref") != ""? page.refs[properties["ref"]]: content);
@@ -952,10 +956,12 @@ public class Selector : Label {
 
     public override void Capture(ConsoleKeyInfo entry) {
         if(entry.Key == ConsoleKey.Enter && page != null) {
+            onChange();
             Page selector = new Page(page.wind, "selectorlabel");
             selector.SetTitle("SELECCIONE UNA OPCIÓN");
             foreach (var child in childs) {
                 selector.InsertLabel<Button>(child.content).action = () => {
+                    SetProperty("value", child.GetProperty("value"));
                     if(child is Button button) button.action();
                     if(child.GetProperty("link") != "" && page.wind.pages.ContainsKey(child.properties["link"])) {
                         page.wind.ReplacePage(child.properties["link"]);
