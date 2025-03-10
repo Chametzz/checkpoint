@@ -136,7 +136,7 @@ home = layout.CreatePage("home", (page) =>
 Registro = layout.CreatePage("register employee", (page) => {
     page.SearchLabel<Form>("REGISTERFORM").SetAction((form, data) => {
 
-        Empleado = Patata.RegisterEmployee(data["FIRTSNAME"], data["LASTNAME"], data["SEX"], data["BIRTHDATE"], data["PHONENO"], data["EMAIL"], data["PASSWORD"], data["ADDESS"], data["HIREDATE"], data["WORKDEPT"], data["JOB"], data ["SALARY"]);
+        Empleado = Patata.RegisterEmployee(data["FIRTSNAME"], data["LASTNAME"], data["SEX"], data["BIRTHDATE"], data["PHONENO"], data["EMAIL"], data["PASSWORD"], data["ADDESS"], data["HIREDATE"], data["WORKDEPT"], data["JOB"], data["SALARY"]);
 =======
 admin = layout.CreatePage("admin", (page) =>
 {
@@ -337,7 +337,7 @@ deleteEmployee.SearchLabel<Form>("DELETEFORM")?.SetAction((form, data) => {
     });
 
 
-
+    
 });*/
 cardHome = layout.CreatePage("card home");
 purchaseCard = layout.CreatePage("purchase card");
