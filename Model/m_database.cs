@@ -120,7 +120,7 @@ public class DB{
         ExecuteQuery(query);
     }
 
-    private void ExecuteQuery(string query) {
+    protected void ExecuteQuery(string query) {
         try {
             connection.Open();
             using (var command = new SQLiteCommand(query, connection)) {
