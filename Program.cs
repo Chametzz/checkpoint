@@ -17,7 +17,7 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
 {
     { "Administracion", new Dictionary<string, string[]>
         {
-            { "Admin", new string[] { "login", "home", "admin", "register employee", "edit employee", "delete employee", "check employee",
+            { "Admin", new string[] { "admin", "register employee", "edit employee", "delete employee", "check employee",
                                      "card home", "purchase card", "delete card", "recharge card", "check card", "edit card",
                                      "prize home", "claim prize", "add prize amount", "add prize", "edit prize", "delete prize",
                                      "game home", "add game", "check game" } }
@@ -25,26 +25,26 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
     },
     { "Recursos Humanos", new Dictionary<string, string[]>
         {
-            { "HR Manager", new string[] { "login", "home", "register employee", "edit employee", "delete employee", "check employee" } },
+            { "HR Manager", new string[] { "register employee", "edit employee", "delete employee", "check employee" } },
             { "HR Assistant", new string[] { "login", "home", "check employee" } }
         }
     },
     { "Tarjetas", new Dictionary<string, string[]>
         {
-            { "Card Manager", new string[] { "login", "home", "card home", "purchase card", "delete card", "recharge card", "check card", "edit card" } },
-            { "Cashier", new string[] { "login", "home", "card home", "purchase card", "recharge card", "check card" } }
+            { "Card Manager", new string[] { "card home", "purchase card", "delete card", "recharge card", "check card", "edit card" } },
+            { "Cashier", new string[] { "card home", "purchase card", "recharge card", "check card" } }
         }
     },
     { "Premios", new Dictionary<string, string[]>
         {
-            { "Prize Manager", new string[] { "login", "home", "prize home", "claim prize", "add prize amount", "add prize", "edit prize", "delete prize" } },
-            { "Prize Assistant", new string[] { "login", "home", "prize home", "claim prize" } }
+            { "Prize Manager", new string[] { "prize home", "claim prize", "add prize amount", "add prize", "edit prize", "delete prize" } },
+            { "Prize Assistant", new string[] { "prize home", "claim prize" } }
         }
     },
     { "Juegos", new Dictionary<string, string[]>
         {
-            { "Game Manager", new string[] { "login", "home", "game home", "add game", "check game" } },
-            { "Operator", new string[] { "login", "home", "game home", "check game" } }
+            { "Game Manager", new string[] { "game home", "add game", "check game" } },
+            { "Operator", new string[] { "game home", "check game" } }
         }
     }
 };
@@ -262,8 +262,35 @@ checkEmployee = layout.CreatePage("check employee", (page) =>
     }
 });
 
-registerEmployee = layout.CreatePage("register employee");
+registerEmployee = layout.CreatePage("register employee", (page) => {
+    Input? workdep = page.SearchLabel<Input>("WORKDEPT");
+    Input? job = page.SearchLabel<Input>("JOB");
+    workdep?.childs.Clear();
+    job?.SetOnChange((label, Page) => {
+        label.childs.Clear();
+        if (workdep != null && job != null && depts.ContainsKey(workdep.GetProperty("value")))
+        {
+            foreach (var item in depts[workdep.GetProperty("value")])
+            {
+                job.InsertChild<Label>(item.Key, ("value", item.Key));
+            }
+        }
+    });
+    if (workdep != null && job != null)
+    {
+        foreach (var item in depts)
+        {
+            workdep.InsertChild<Label>(item.Key, ("value", item.Key));
+        }
+    }
+    
+
+});
 registerEmployee.SearchLabel<Form>("REGISTERFORM")?.SetAction((form, data) => {
+    if(data["PASSWORD"] != data["VERIFYPASS"]) {
+        form.SetWarning("Las contraseñas no coinciden.");
+        return;
+    }
     bool recep = Patata.RegisterEmployee(
                 data["FIRSTNAME"]?.ToString() ?? "",
                 data["LASTNAME"]?.ToString() ?? "",
@@ -273,7 +300,7 @@ registerEmployee.SearchLabel<Form>("REGISTERFORM")?.SetAction((form, data) => {
                 data["EMAIL"]?.ToString() ?? "",
                 data["PASSWORD"]?.ToString() ?? "",
                 data["ADDRESS"]?.ToString() ?? "",
-                data["HIREDATE"]?.ToString() ?? "",
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 data["WORKDEPT"]?.ToString() ?? "",
                 data["JOB"]?.ToString() ?? "",
                 Convert.ToSingle(data["SALARY"])
@@ -287,7 +314,14 @@ registerEmployee.SearchLabel<Form>("REGISTERFORM")?.SetAction((form, data) => {
 
 editEmployee = layout.CreatePage("edit employee");
 deleteEmployee = layout.CreatePage("delete employee");
-
+deleteEmployee.SearchLabel<Form>("DELETEFORM")?.SetAction((form, data) => {
+    bool recep = Patata.DeleteEmployeeById(Convert.ToInt32(data["ID"]));
+    if (recep) {
+        form.page?.wind.BackLoadPage();
+    } else {
+        form.SetWarning("Ocurrió un error.");
+    }
+});
 /*registerEmployee = layout.CreatePage("register employee", (page) =>
 {
     page.SearchLabel<Form>("REGISTERFORM").SetAction((form, data) =>
@@ -298,6 +332,24 @@ deleteEmployee = layout.CreatePage("delete employee");
 
 
 });*/
+cardHome = layout.CreatePage("card home");
+purchaseCard = layout.CreatePage("purchase card");
+deleteCard = layout.CreatePage("delete card");
+rechargeCard = layout.CreatePage("recharge card");
+checkCard = layout.CreatePage("check card");
+editCard = layout.CreatePage("edit card");
+
+prizeHome = layout.CreatePage("prize home");
+claimPrize = layout.CreatePage("claim prize");
+addPrizeAmount = layout.CreatePage("add prize amount");
+addPrize = layout.CreatePage("add prize");
+editPrize = layout.CreatePage("edit prize");
+deletePrize = layout.CreatePage("delete prize");
+
+gameHome = layout.CreatePage("game home");
+addGame = layout.CreatePage("add game");
+checkGame = layout.CreatePage("check game");
+
 admin.InsertLink(ConsoleKey.F1, registerEmployee);
 admin.InsertLink(ConsoleKey.F2, editEmployee);
 admin.InsertLink(ConsoleKey.F3, deleteEmployee);
