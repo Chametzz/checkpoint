@@ -104,6 +104,35 @@ internal class ModelPrizes : DB {
             return false;
         }
     }
+    public List<Prizes> GetAllPrizes()
+{
+    List<Prizes> prizesList = new List<Prizes>(); // Creamos la lista para almacenar los premios
+
+    try
+    {
+        // Obtenemos todos los premios desde la base de datos
+        var prizesData = Read();
+
+        // Iteramos sobre los resultados obtenidos y creamos objetos de tipo Prizes
+        foreach (var prize in prizesData)
+        {
+            // Comprobamos si los valores son nulos antes de asignarlos
+            int id = Convert.ToInt32(prize["ID"]);
+            string name = prize["NAME"]?.ToString() ?? "Sin nombre"; // Si es null, asigna "Sin nombre"
+            float price = prize["PRICE"] != DBNull.Value ? Convert.ToSingle(prize["PRICE"]) : 0f; // Si es null, asigna 0f
+            int amount = prize["AMOUNT"] != DBNull.Value ? Convert.ToInt32(prize["AMOUNT"]) : 0; // Si es null, asigna 0
+
+            // Agregamos el objeto Prizes a la lista
+            prizesList.Add(new Prizes(id, name, price, amount));
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error al leer los premios: {ex.Message}");
+    }
+
+    return prizesList; // Devolvemos la lista completa de premios
+}
 }
 
 
