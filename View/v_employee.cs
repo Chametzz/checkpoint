@@ -32,7 +32,10 @@ public class HomePage : Page
 public class AdminPage : Page {
     public AdminPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("ADMINISTRACIÓN");
-        InsertLabel<Input>("Seleccione un departamento", ("type", "select"), ("name", "WORKDEP"));
+        InsertLabel<Selector>("Seleccione un departamento", ("name", "WORKDEP"));
+        InsertLabel<Selector>("Seleccione un departamento", ("name", "JOB"));
+        InsertLabel<Table>("", ("name", "TABLEINFO"));
+        InsertLabel<Selector>("SELECCIONAR EMPLEADO:", ("name", "EMPLOYEE"));
     }
 }
 
@@ -91,6 +94,21 @@ public class DelEmpPage : Page
     }
 }
 
-public class CheckEmployee : DB {
-
+public class CheckEmpPage : Page
+{
+    public CheckEmpPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
+        SetTitle("CONSULTAR EMPLEADO");
+        InsertLabel<Label>("ID:", ("ref", "id"));
+        InsertLabel<Label>("Nombre:", ("ref", "first_name"));
+        InsertLabel<Label>("Apellido:", ("ref", "last_name"));
+        InsertLabel<Label>("Sexo:", ("ref", "sex"));
+        InsertLabel<Label>("Fecha de nacimiento:", ("ref", "birthdate"));
+        InsertLabel<Label>("Teléfono:", ("ref", "phone_no"));
+        InsertLabel<Label>("Correo electrónico:", ("ref", "email"));
+        InsertLabel<Label>("Dirección:", ("ref", "address"));
+        InsertLabel<Label>("Fecha de contratación:", ("ref", "hiredate"));
+        InsertLabel<Label>("Departamento:", ("ref", "workdept"));
+        InsertLabel<Label>("Trabajo:", ("ref", "job"));
+        InsertLabel<Label>("Salario:", ("ref", "salary"));
+    }
 }
