@@ -57,7 +57,8 @@ Home = layout.CreatePage("home", (page) => {
 
 Registro = layout.CreatePage("register employee", (page) => {
     page.SearchLabel<Form>("REGISTERFORM").SetAction((form, data) => {
-        Empleado = Patata.RegisterEmployee(data["FIRTSNAME"]);
+
+        Empleado = Patata.RegisterEmployee(data["FIRTSNAME"], data["LASTNAME"], data["SEX"], data["BIRTHDATE"], data["PHONENO"], data["EMAIL"], data["PASSWORD"], data["ADDESS"], data["HIREDATE"], data["WORKDEPT"], data["JOB"], data ["SALARY"]);
     });
 
 
