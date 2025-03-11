@@ -49,8 +49,8 @@ public class DB{
                         STATUS TEXT NOT NULL, 
                         BALANCE DECIMAL(9, 2), 
                         POINTS INT, 
-                        ISSUEDATE DATE NOT NULL, 
-                        EXPDATE DATE
+                        ISSUEDATE TEXT NOT NULL, 
+                        EXPDATE TEXT
                     );
                 ",
                 @"

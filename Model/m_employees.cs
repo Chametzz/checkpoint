@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class ModelEmployees : DB {
 
     public ModelEmployees() : base () {
@@ -66,7 +68,7 @@ public class ModelEmployees : DB {
 }
     public bool IsEmailRegisteredForCurrentEmployee(int id, string email)
 {
-    var result = Read($"EMAIL = '{email}' AND ID != {id}");  // Verifica si otro empleado tiene el mismo correo
+    var result = Read($"EMAIL = '{email}' AND ID = {id}");  // Verifica si otro empleado tiene el mismo correo
     return result.Count > 0;  // Si ya hay otro empleado con ese correo, retorna true
 }
 
@@ -214,7 +216,7 @@ public class ModelEmployees : DB {
     string query = $"SELECT * FROM EMPLOYEES WHERE ID = {id}";
 
     // Leer los datos de la base de datos
-    var result = Read(query);  // Aquí deberías tener un método Read que ejecute la consulta y obtenga los datos
+    var result = Read($"ID = {id}");  // Aquí deberías tener un método Read que ejecute la consulta y obtenga los datos
 
     if (result.Count > 0)
     {
@@ -226,11 +228,11 @@ public class ModelEmployees : DB {
             emp["FIRSTNAME"]?.ToString() ?? "",
             emp["LASTNAME"]?.ToString() ?? "",
             emp["SEX"]?.ToString() ?? "",
-            emp["BIRTHDATE"]?.ToString() ?? "",
+            DateTime.Parse(emp["BIRTHDATE"]?.ToString() ?? "").ToString("yyyy-MM-dd HH:mm:ss"),
             emp["PHONENO"]?.ToString() ?? "",
             emp["EMAIL"]?.ToString() ?? "",
             emp["ADDRESS"]?.ToString() ?? "",
-            emp["HIREDATE"]?.ToString() ?? "",
+            DateTime.Parse(emp["HIREDATE"]?.ToString() ?? "").ToString("yyyy-MM-dd HH:mm:ss"),
             emp["WORKDEPT"]?.ToString() ?? "",
             emp["JOB"]?.ToString() ?? "",
             Convert.ToSingle(emp["SALARY"] ?? 0)

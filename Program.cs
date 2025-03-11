@@ -9,7 +9,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 DB.SETDATABASE(Path.Combine(Directory.GetCurrentDirectory(), "database.db"));
 
-ModelEmployees Patata = new ModelEmployees();
+ModelEmployees modelEmployee = new ModelEmployees();
+ModelPlaycards modelPlaycard = new ModelPlaycards();
+ModelGames modelGames = new ModelGames();
+ModelPrizes modelPrizes = new ModelPrizes();
 CheckPointUI layout = new CheckPointUI(new Window());
 
 /*DATOS LOCALES*/
@@ -63,7 +66,7 @@ login = layout.CreatePage("login", (page) => { });
 login.SearchLabel<Form>("LOGINFORM")?.SetAction((form, data) =>
 {
 
-    Empleado = Patata.Login(data["USERNAME"], data["PASSWORD"]);
+    Empleado = modelEmployee.Login(data["USERNAME"], data["PASSWORD"]);
     if (Empleado != null)
     {
         form.page?.wind?.ReplacePage(home);
@@ -139,14 +142,23 @@ admin = layout.CreatePage("admin", (page) =>
     Selector? job = admin.SearchLabel<Selector>("JOB");
     Selector? emp = admin.SearchLabel<Selector>("EMPLOYEE");
     workdep?.childs.Clear();
+    UpdateTable(workdep?.GetProperty("value") ?? "", job?.GetProperty("value") ?? "");
     if (workdep != null && job != null)
     {
         foreach (var item in depts)
         {
-            workdep.InsertChild<Button>(item.Key, ("value", item.Key)).SetAction(() => UpdateTable(workdep.GetProperty("value"), job.GetProperty("value")));
+            workdep.InsertChild<Button>(item.Key, ("value", item.Key)).SetAction(() => {
+                job?.SetProperty("value", "");
+                job?.childs.Clear();
+                foreach (var item in depts[workdep.GetProperty("value")])
+                {
+                    job?.InsertChild<Button>(item.Key, ("value", item.Key)).SetAction(() => UpdateTable(workdep.GetProperty("value"), job.GetProperty("value")));
+                }
+                UpdateTable(workdep.GetProperty("value"), job?.GetProperty("value") ?? "");
+            });
         }
     }
-    job?.childs.Clear();
+    /*job?.childs.Clear();
     if (workdep != null && job != null && depts.ContainsKey(workdep.GetProperty("value")))
     {
         foreach (var item in depts[workdep.GetProperty("value")])
@@ -154,11 +166,11 @@ admin = layout.CreatePage("admin", (page) =>
             job.InsertChild<Button>(item.Key, ("value", item.Key)).SetAction(() => UpdateTable(workdep.GetProperty("value"), job.GetProperty("value")));
         }
         UpdateTable(workdep.GetProperty("value"), job.GetProperty("value"));
-    }
+    }*/
     emp?.childs.Clear();
     if (emp != null && workdep != null && job != null)
     {
-        var emps = Patata.Read();
+        var emps = modelEmployee.Read();
         foreach (var employee in emps)
         {
             if ((workdep.GetProperty("value") == "" || workdep.GetProperty("value") == $"{employee["WORKDEPT"]}") && (job.GetProperty("value") == "" || job.GetProperty("value") == $"{employee["JOB"]}"))
@@ -170,11 +182,11 @@ admin = layout.CreatePage("admin", (page) =>
                         employee["FIRSTNAME"]?.ToString() ?? "",
                         employee["LASTNAME"]?.ToString() ?? "",
                         employee["SEX"]?.ToString() ?? "",
-                        employee["BIRTHDATE"]?.ToString() ?? "",
+                        DateTime.Parse(employee["BIRTHDATE"]?.ToString() ?? "").ToString("yyyy-MM-dd HH:mm:ss"),
                         employee["PHONENO"]?.ToString() ?? "",
                         employee["EMAIL"]?.ToString() ?? "",
                         employee["ADDRESS"]?.ToString() ?? "",
-                        employee["HIREDATE"]?.ToString() ?? "",
+                        DateTime.Parse(employee["HIREDATE"]?.ToString() ?? "").ToString("yyyy-MM-dd HH:mm:ss"),
                         employee["WORKDEPT"]?.ToString() ?? "",
                         employee["JOB"]?.ToString() ?? "",
                         Convert.ToSingle(employee["SALARY"] ?? 0)
@@ -202,7 +214,7 @@ admin = layout.CreatePage("admin", (page) =>
             info.InsertChild<Label>("WORKDEPT");
             info.InsertChild<Label>("JOB");
             info.InsertChild<Label>("SALARY");
-            var emps = Patata.Read();
+            var emps = modelEmployee.Read();
             foreach (var emp in emps)
             {
                 if (workdeptvalue == "" || workdeptvalue == $"{emp["WORKDEPT"]}" && jobvalue == "" || jobvalue == $"{emp["JOB"]}")
@@ -237,7 +249,7 @@ checkEmployee = layout.CreatePage("check employee", (page) =>
         page.SetRef("birthdate", $"Fecha de Nacimiento: {selectemp.Birthdate}");
         page.SetRef("phone_no", $"Telefono: {selectemp.Phoneno}");
         page.SetRef("email", $"Correo Electronico: {selectemp.Email}");
-        page.SetRef("adress", $"Direcci�n: {selectemp.Adress}");
+        page.SetRef("address", $"Direcci�n: {selectemp.Adress}");
         page.SetRef("hiredate", $"Fecha de Contratacion: {selectemp.Hiredate}");
         page.SetRef("workdept", $"Departamento: {selectemp.Workdept}");
         page.SetRef("job", $"Trabajo: {selectemp.Job}");
@@ -254,12 +266,18 @@ checkEmployee = layout.CreatePage("check employee", (page) =>
         page.SetRef("birthdate", "");
         page.SetRef("phone_no", "");
         page.SetRef("email", "");
-        page.SetRef("adress", "");
+        page.SetRef("address", "");
         page.SetRef("hiredate", "");
         page.SetRef("workdept", "");
         page.SetRef("job", "");
         page.SetRef("salary", "");
     }
+});
+checkEmployee.SearchLabel<Button>("EDITBUTTON")?.SetAction(() => {
+    checkEmployee.wind.LoadPage(editEmployee);
+});
+checkEmployee.SearchLabel<Button>("DELETEBUTTON")?.SetAction(() => {
+    checkEmployee.wind.LoadPage(deleteEmployee);
 });
 
 registerEmployee = layout.CreatePage("register employee", (page) => {
@@ -291,7 +309,7 @@ registerEmployee.SearchLabel<Form>("REGISTERFORM")?.SetAction((form, data) => {
         form.SetWarning("Las contraseñas no coinciden.");
         return;
     }
-    bool recep = Patata.RegisterEmployee(
+    bool recep = modelEmployee.RegisterEmployee(
                 data["FIRSTNAME"]?.ToString() ?? "",
                 data["LASTNAME"]?.ToString() ?? "",
                 data["SEX"]?.ToString() ?? "",
@@ -312,10 +330,43 @@ registerEmployee.SearchLabel<Form>("REGISTERFORM")?.SetAction((form, data) => {
     }
 });
 
-editEmployee = layout.CreatePage("edit employee");
+editEmployee = layout.CreatePage("edit employee", (page) => {
+    page.SearchLabel<Input>("FIRSTNAME")?.SetProperty("value", $"{selectemp?.Firstname}");
+    page.SearchLabel<Input>("LASTNAME")?.SetProperty("value", $"{selectemp?.Lastname}");
+    page.SearchLabel<Input>("SEX")?.SetProperty("value", $"{selectemp?.Sex}");
+    page.SearchLabel<Input>("BIRTHDATE")?.SetProperty("value", $"{selectemp?.Birthdate}");
+    page.SearchLabel<Input>("PHONENO")?.SetProperty("value", $"{selectemp?.Phoneno}");
+    page.SearchLabel<Input>("EMAIL")?.SetProperty("value", $"{selectemp?.Email}");
+    page.SearchLabel<Input>("ADDRESS")?.SetProperty("value", $"{selectemp?.Adress}");
+    page.SearchLabel<Input>("WORKDEPT")?.SetProperty("value", $"{selectemp?.Workdept}");
+    page.SearchLabel<Input>("JOB")?.SetProperty("value", $"{selectemp?.Job}");
+    page.SearchLabel<Input>("SALARY")?.SetProperty("value", $"{selectemp?.Salary}");
+    page.SearchLabel<Input>("PASSWORD")?.SetProperty("value", "");
+});
+editEmployee.SearchLabel<Form>("EDITFORM")?.SetAction((form, data) => {
+    if(selectemp != null) {
+        if(data["PASSWORD"] == "") {
+            if(modelEmployee.EditEmployeeById(selectemp.Id, data["FIRSTNAME"], data["LASTNAME"], data["SEX"], data["BIRTHDATE"], data["PHONENO"], data["EMAIL"], data["ADDRESS"], selectemp.Hiredate, data["WORKDEPT"], data["JOB"], Convert.ToSingle(data["SALARY"]))) {
+                selectemp = modelEmployee.GetEmployeeById(selectemp.Id);
+                form.page?.wind?.BackLoadPage();
+            } else {
+                form.SetWarning("Ocurrió un error.");
+            }
+        } else {
+            if(modelEmployee.EditEmployeeByIdPassword(selectemp.Id, data["FIRSTNAME"], data["LASTNAME"], data["SEX"], data["BIRTHDATE"], data["PHONENO"], data["EMAIL"], data["PASSWORD"], data["ADDRESS"], selectemp.Hiredate, data["WORKDEPT"], data["JOB"], Convert.ToSingle(data["SALARY"]))) {
+                selectemp = modelEmployee.GetEmployeeById(selectemp.Id);
+                form.page?.wind?.BackLoadPage();
+            } else {
+                form.SetWarning("Ocurrió un error.");
+            }
+            
+        }
+    }
+});
+
 deleteEmployee = layout.CreatePage("delete employee");
 deleteEmployee.SearchLabel<Form>("DELETEFORM")?.SetAction((form, data) => {
-    bool recep = Patata.DeleteEmployeeById(Convert.ToInt32(data["ID"]));
+    bool recep = modelEmployee.DeleteEmployeeById(Convert.ToInt32(data["ID"]));
     if (recep) {
         form.page?.wind.BackLoadPage();
     } else {
@@ -326,27 +377,111 @@ deleteEmployee.SearchLabel<Form>("DELETEFORM")?.SetAction((form, data) => {
 {
     page.SearchLabel<Form>("REGISTERFORM").SetAction((form, data) =>
     {
-        Empleado = Patata.RegisterEmployee(data["FIRTSNAME"]);
+        Empleado = modelEmployee.RegisterEmployee(data["FIRTSNAME"]);
     });
 
 
 
 });*/
 cardHome = layout.CreatePage("card home");
+
 purchaseCard = layout.CreatePage("purchase card");
+purchaseCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
+    modelPlaycard.Create("STATUS, BALANCE, POINTS, ISSUEDATE, EXPDATE", $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, {DateTime.Now.ToString("yyyy-MM-dd")}, 2050-10-10");
+    form.page?.wind?.BackLoadPage();
+});
+
 deleteCard = layout.CreatePage("delete card");
 rechargeCard = layout.CreatePage("recharge card");
 checkCard = layout.CreatePage("check card");
 editCard = layout.CreatePage("edit card");
 
-prizeHome = layout.CreatePage("prize home");
-claimPrize = layout.CreatePage("claim prize");
+Prizes? prize = null;
+prizeHome = layout.CreatePage("prize home", (page) => {
+    var prizes = modelPrizes.Read();
+    Selector? sel = page.SearchLabel<Selector>("PRIZES");
+    sel?.childs.Clear();
+    foreach (var p in prizes) {
+        sel?.InsertChild<Button>($"{p["ID"]}    {p["NAME"]} {p["PRICE"]}    {p["AMOUNT"]}", ("link", $"{claimPrize.key}")).SetAction(() => {
+            prize = new Prizes(Convert.ToInt32(p["ID"]), p["NAME"]?.ToString() ?? "", Convert.ToSingle(p["PRICE"]), Convert.ToInt32(p["AMOUNT"]));
+        });
+    }
+
+    Table? info = prizeHome.SearchLabel<Table>("TABLEINFO")?.SetColumns(4);
+    if(info != null) {
+        info.childs.Clear();
+        info.InsertChild<Label>("ID");
+        info.InsertChild<Label>("NAME");
+        info.InsertChild<Label>("PRICE");
+        info.InsertChild<Label>("AMOUNT");
+        foreach (var prize in prizes) {
+            info.InsertChild<Label>($"{prize["ID"]}");
+            info.InsertChild<Label>($"{prize["NAME"]}");
+            info.InsertChild<Label>($"{prize["PRICE"]}");
+            info.InsertChild<Label>($"{prize["AMOUNT"]}");
+        }
+    }
+});
 addPrizeAmount = layout.CreatePage("add prize amount");
+claimPrize = layout.CreatePage("claim prize", (page) => {
+    page.SetRef("prize", $"{prize?.Name} por {prize?.Price} pts");
+});
+claimPrize.SearchLabel<Form>("CLAIMFORM")?.SetAction((form, data) => {
+    int amount = Convert.ToInt32(data["AMOUNT"]);
+    int cardID = Convert.ToInt32(data["IDCARD"]);
+    var card = modelPlaycard.Read($"ID = {cardID}");
+    float total = amount * (prize?.Price ?? 0);
+    if (prize?.Amount - amount < 0) {
+        form.SetWarning("No hay suficientes premios.");
+        return;
+    }
+    if(card.Count > 0) {
+        if(total <= Convert.ToInt32(card[0]["POINTS"])) {
+            modelPlaycard.Update($"POINTS = POINTS - {total}", $"ID = {cardID}");
+            modelPrizes.Update($"AMOUNT = AMOUNT - {amount}", $"{prize?.Id}");
+            form.page?.wind?.BackLoadPage();
+        } else {
+            form.SetWarning("Puntos insuficientes");
+        }
+    } else {
+        form.SetWarning("No se encontró la tarjeta");
+    }
+});
 addPrize = layout.CreatePage("add prize");
 editPrize = layout.CreatePage("edit prize");
 deletePrize = layout.CreatePage("delete prize");
 
-gameHome = layout.CreatePage("game home");
+gameHome = layout.CreatePage("game home", (page) => {
+    var games = modelGames.Read();
+    
+    // Selector para elegir juegos
+    Selector? sel = page.SearchLabel<Selector>("PRIZES"); // Cambia "PRIZES" si necesitas otro nombre
+    sel?.childs.Clear();
+    foreach (var g in games) {
+        sel?.InsertChild<Button>($"{g["ID"]}    {g["NAME"]} {g["TYPE"]}    {g["PRICE"]}", ("link", $"{checkGame.key}")).SetAction(() => {
+            /*selectedGame = new Game(Convert.ToInt32(g["ID"]), g["NAME"]?.ToString() ?? "", g["TYPE"]?.ToString() ?? "", g["STATUS"]?.ToString() ?? "", Convert.ToInt32(g["CAPACITY"]), Convert.ToSingle(g["PRICE"]));*/
+        });
+    }
+
+    // Tabla con la información de los juegos
+    Table? info = gameHome.SearchLabel<Table>("TABLEINFO")?.SetColumns(5);
+    if (info != null) {
+        info.childs.Clear();
+        info.InsertChild<Label>("ID");
+        info.InsertChild<Label>("NAME");
+        info.InsertChild<Label>("TYPE");
+        info.InsertChild<Label>("CAPACITY");
+        info.InsertChild<Label>("PRICE");
+
+        foreach (var game in games) {
+            info.InsertChild<Label>($"{game["ID"]}");
+            info.InsertChild<Label>($"{game["NAME"]}");
+            info.InsertChild<Label>($"{game["TYPE"]}");
+            info.InsertChild<Label>($"{game["CAPACITY"]}");
+            info.InsertChild<Label>($"{game["PRICE"]}");
+        }
+    }
+});
 addGame = layout.CreatePage("add game");
 checkGame = layout.CreatePage("check game");
 

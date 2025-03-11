@@ -14,8 +14,8 @@ public class ClaimPrizePage : Page
         InsertLabel<Label>("Adquirir");
         InsertLabel<Label>("", ("ref", "prize"));
         Form claimform = InsertLabel<Form>("", ("name", "CLAIMFORM"));
-        claimform.InsertChild<Input>("Cantidad:", ("type", "number"), ("name", "AMOUNT"));
-        claimform.InsertChild<Input>("ID de la tarjeta:", ("type", "number"), ("name", "IDCARD"));
+        claimform.InsertChild<Input>("Cantidad:", ("type", "number"), ("name", "AMOUNT"), ("required", "true"));
+        claimform.InsertChild<Input>("ID de la tarjeta:", ("type", "number"), ("name", "IDCARD"), ("required", "true"));
         claimform.InsertChild<Input>("Reclamar", ("type", "submit"));
     }
 }

@@ -76,13 +76,14 @@ public class EditEmpPage : Page
         sex.InsertChild<Label>("HOMBRE", ("value", "HOMBRE"));
         sex.InsertChild<Label>("MUJER", ("value", "MUJER"));
         sex.InsertChild<Label>("OTRO", ("value", "OTRO"));
-        register.InsertChild<Input>("Fecha de nacimiento:", ("type", "text"), ("name", "BIRTHDATE"), ("required", "true"));
+        register.InsertChild<Input>("Fecha de nacimiento:", ("type", "date"), ("name", "BIRTHDATE"), ("required", "true"));
         register.InsertChild<Input>("Número de teléfono:", ("type", "number"), ("name", "PHONENO"), ("required", "true"));
         register.InsertChild<Input>("Correo electrónico:", ("type", "text"), ("name", "EMAIL"), ("required", "true"));
         register.InsertChild<Input>("Dirección:", ("type", "text"), ("name", "ADDRESS"), ("required", "true"));
         register.InsertChild<Input>("Departamento:", ("type", "select"), ("name", "WORKDEPT"), ("required", "true"));
         register.InsertChild<Input>("Puesto:", ("type", "select"), ("name", "JOB"), ("required", "true"));
-        register.InsertChild<Input>("Nueva Contraseña (opcional):", ("type", "select"), ("name", "PASSWORD"), ("required", "true"));
+        register.InsertChild<Input>("Salario:", ("type", "number"), ("decimal", "true"), ("name", "SALARY"), ("required", "true"));
+        register.InsertChild<Input>("Nueva Contraseña (opcional):", ("type", "password"), ("name", "PASSWORD"));
         register.InsertChild<Input>("Editar", ("type", "submit"));
     }
 }
@@ -101,6 +102,7 @@ public class CheckEmpPage : Page
 {
     public CheckEmpPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("CONSULTAR EMPLEADO");
+        InsertLabel<Button>("Editar", ("name", "EDITBUTTON"));
         InsertLabel<Label>("ID:", ("ref", "id"));
         InsertLabel<Label>("Nombre:", ("ref", "first_name"));
         InsertLabel<Label>("Apellido:", ("ref", "last_name"));
@@ -113,5 +115,6 @@ public class CheckEmpPage : Page
         InsertLabel<Label>("Departamento:", ("ref", "workdept"));
         InsertLabel<Label>("Trabajo:", ("ref", "job"));
         InsertLabel<Label>("Salario:", ("ref", "salary"));
+        InsertLabel<Button>("Eliminar", ("name", "DELETEBUTTON"));
     }
 }
