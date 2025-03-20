@@ -438,7 +438,7 @@ claimPrize.SearchLabel<Form>("CLAIMFORM")?.SetAction((form, data) => {
     if(card.Count > 0) {
         if(total <= Convert.ToInt32(card[0]["POINTS"])) {
             modelPlaycard.Update($"POINTS = POINTS - {total}", $"ID = {cardID}");
-            modelPrizes.Update($"AMOUNT = AMOUNT - {amount}", $"{prize?.Id}");
+            modelPrizes.Update($"AMOUNT = AMOUNT - {amount}", $"ID = {prize?.Id}");
             form.page?.wind?.BackLoadPage();
         } else {
             form.SetWarning("Puntos insuficientes");
