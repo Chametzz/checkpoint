@@ -383,15 +383,51 @@ deleteEmployee.SearchLabel<Form>("DELETEFORM")?.SetAction((form, data) => {
 
 
 });*/
-cardHome = layout.CreatePage("card home");
+cardHome = layout.CreatePage("card home", (page) => {
+
+Table? Tabla = page.SearchLabel<Table>("TABLEINFO");
+if (Tabla != null){
+
+    Tabla.childs = new();
+Tabla.SetColumns(6);
+Tabla.InsertChild<Label>("ID");
+Tabla.InsertChild<Label>("ESTADO");
+Tabla.InsertChild<Label>("SALDO");
+Tabla.InsertChild<Label>("PUNTOS");
+Tabla.InsertChild<Label>("FECHA DE INICIO");
+Tabla.InsertChild<Label>("FECHA DE EXPIRACION");
+
+var Tarjetas = modelPlaycard.Read();
+foreach (var tj in Tarjetas) {
+    Tabla.InsertChild<Label>(tj["ID"]?.ToString()??"");
+Tabla.InsertChild<Label>(tj["STATUS"]?.ToString()??"");
+Tabla.InsertChild<Label>(tj["BALANCE"]?.ToString()??"");
+Tabla.InsertChild<Label>(tj["POINTS"]?.ToString()??"");
+Tabla.InsertChild<Label>(tj["ISSUEDATE"]?.ToString()??"");
+Tabla.InsertChild<Label>(tj["EXPDATE"]?.ToString()??"");
+
+}
+}
+
+
+
+});
+
+
 
 purchaseCard = layout.CreatePage("purchase card");
 purchaseCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
-    modelPlaycard.Create("STATUS, BALANCE, POINTS, ISSUEDATE, EXPDATE", $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, {DateTime.Now.ToString("yyyy-MM-dd")}, 2050-10-10");
+    modelPlaycard.Create("STATUS, BALANCE, POINTS, ISSUEDATE, EXPDATE", $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'");
     form.page?.wind?.BackLoadPage();
 });
 
 deleteCard = layout.CreatePage("delete card");
+
+
+
+
+
+
 rechargeCard = layout.CreatePage("recharge card");
 checkCard = layout.CreatePage("check card");
 editCard = layout.CreatePage("edit card");
@@ -450,6 +486,7 @@ claimPrize.SearchLabel<Form>("CLAIMFORM")?.SetAction((form, data) => {
 addPrize = layout.CreatePage("add prize");
 editPrize = layout.CreatePage("edit prize");
 deletePrize = layout.CreatePage("delete prize");
+
 
 gameHome = layout.CreatePage("game home", (page) => {
     var games = modelGames.Read();
