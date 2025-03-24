@@ -422,9 +422,13 @@ purchaseCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
 });
 
 deleteCard = layout.CreatePage("delete card");
+deleteCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
+    modelPlaycard.Delete($"ID = {data["ID"]}");
+
+        form.page?.wind.BackLoadPage();
 
 
-
+});
 
 
 
