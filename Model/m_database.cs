@@ -81,9 +81,9 @@ public class DB{
         }
     }
     
-    public void Create(string columns, string values) {
+    public bool Create(string columns, string values) {
         string query = $"INSERT INTO {table} ({columns}) VALUES ({values})";
-        ExecuteQuery(query);
+        return ExecuteQuery(query);
     }
 
     public List<Dictionary<string, object?>> Read(string condition = "1=1") {
@@ -110,24 +110,26 @@ public class DB{
         return result;
     }
 
-    public void Update(string setColumns, string condition) {
+    public bool Update(string setColumns, string condition) {
         string query = $"UPDATE {table} SET {setColumns} WHERE {condition}";
-        ExecuteQuery(query);
+        return ExecuteQuery(query);
     }
 
-    public void Delete(string condition) {
+    public bool Delete(string condition) {
         string query = $"DELETE FROM {table} WHERE {condition}";
-        ExecuteQuery(query);
+        return ExecuteQuery(query);
     }
 
-    protected void ExecuteQuery(string query) {
+    protected bool ExecuteQuery(string query) {
         try {
             connection.Open();
             using (var command = new SQLiteCommand(query, connection)) {
                 command.ExecuteNonQuery();
+                return true;
             }
         } catch (Exception ex) {
             Console.WriteLine($"Error executing query: {ex.Message}");
+            return false;
         } finally {
             connection.Close();
         }

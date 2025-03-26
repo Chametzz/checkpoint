@@ -2,6 +2,26 @@ internal class ModelPlaycards : DB {
     public ModelPlaycards() : base () {
         this.table = "PLAYCARDS";
     }
+        public bool DeletePlaycardById(int id)
+{
+    try
+    {
+        // Construir la consulta SQL para eliminar el empleado con el ID dado
+        string query = $"DELETE FROM {table} WHERE ID = {id}";
+
+        // Ejecutamos la consulta SQL para eliminar el empleado
+        ExecuteQuery(query);  // Método que ejecuta la consulta SQL
+
+        Console.WriteLine("Tarjeta eliminada exitosamente.");
+        return true;  // Si la eliminación fue exitosa, retornamos true
+    }
+    catch (Exception ex)
+    {
+        // Si ocurre algún error, lo capturamos y retornamos false
+        Console.WriteLine($"Error al eliminar el tarjeta: {ex.Message}");
+        return false;  // Si la eliminación falló, retornamos false
+    }
+}
 }
 public class Playcard
 {

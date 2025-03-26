@@ -422,12 +422,18 @@ purchaseCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
 });
 
 deleteCard = layout.CreatePage("delete card");
-deleteCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
-    modelPlaycard.Delete($"ID = {data["ID"]}");
-
+deleteCard.SearchLabel<Form>("DELETECARD")?.SetAction((form, data) => {
+    if(modelPlaycard.Read($"ID = {data["ID"]}").Count <= 0) {
+        form.SetWarning("No existe el ID");
+        return;
+    }
+    bool recep = modelPlaycard.Delete($"ID = {data["ID"]}");
+    if (recep) {
         form.page?.wind.BackLoadPage();
-
-
+    } else
+    {
+        form.SetWarning("Ocurrió un error.");
+    }
 });
 
 
