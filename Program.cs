@@ -1,3 +1,5 @@
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using SQLitePCL;
 using System;
 using System.Data;
@@ -418,7 +420,36 @@ Tabla.InsertChild<Label>(tj["EXPDATE"]?.ToString()??"");
 purchaseCard = layout.CreatePage("purchase card");
 purchaseCard.SearchLabel<Form>("CARDFORM")?.SetAction((form, data) => {
     modelPlaycard.Create("STATUS, BALANCE, POINTS, ISSUEDATE, EXPDATE", $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'");
-    form.page?.wind?.BackLoadPage();
+
+
+string ruta = "documento.pdf"; // Ruta donde se guardará el PDF
+
+        // Crear el documento PDF
+        Document doc = new Document();
+        
+        try
+        {
+            // Crear el escritor que guardará el PDF en la ruta especificada
+            PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
+
+            // Abrir el documento para escribir
+            doc.Open();
+
+            // Agregar un título
+            doc.Add(new Paragraph("¡Hola, mundo!"));
+            doc.Add(new Paragraph("Este es un documento PDF generado en C# con iTextSharp."));
+            
+            // Cerrar el documento
+            doc.Close();
+            purchaseCard.InsertLabel<Label>("PDF creado con éxito en: " + Path.GetFullPath(ruta));
+            layout.wind.RefreshPage();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex.Message);
+        }
+form.page?.wind?.BackLoadPage();
+
 });
 
 deleteCard = layout.CreatePage("delete card");
@@ -437,9 +468,12 @@ deleteCard.SearchLabel<Form>("DELETECARD")?.SetAction((form, data) => {
 });
 
 
-
 rechargeCard = layout.CreatePage("recharge card");
+
+
 checkCard = layout.CreatePage("check card");
+
+
 editCard = layout.CreatePage("edit card");
 
 Prizes? prize = null;
