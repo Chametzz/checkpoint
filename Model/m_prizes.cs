@@ -1,6 +1,4 @@
-using System.Data.Common;
-
-internal class ModelPrizes : DB {
+public class ModelPrizes : DB {
     public ModelPrizes() : base () {
         this.table = "PRIZES";
     }

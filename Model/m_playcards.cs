@@ -1,4 +1,4 @@
-internal class ModelPlaycards : DB {
+public class ModelPlaycards : DB {
     public ModelPlaycards() : base () {
         this.table = "PLAYCARDS";
     }

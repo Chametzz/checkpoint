@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 public class ModelEmployees : DB {
 
     public ModelEmployees() : base () {
