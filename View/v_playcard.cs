@@ -30,8 +30,9 @@ public class RechargeCardPage : Page
     public RechargeCardPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("RECARGAR TARJETA");
         Form newcard = InsertLabel<Form>("Introduzca el monto para recargar su tarjeta:", ("name", "RECHARGECARD"));
+        newcard.InsertChild<Input>("ID:", ("type", "number"), ("name", "ID"), ("required", "true"));
         newcard.InsertChild<Input>("Saldo por agregar:", ("type", "number"), ("name", "BALANCE"), ("required", "true"));
-        newcard.InsertChild<Input>("Comprar", ("type", "submit"));
+        newcard.InsertChild<Input>("Recargar", ("type", "submit"));
     }
 }
 
