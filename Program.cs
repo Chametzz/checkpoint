@@ -1,14 +1,6 @@
-using System;
-using System.Data;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
-using SQLitePCL;
-using static System.Collections.Specialized.BitVector32;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 DB.SETDATABASE(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "database.db"));
 
@@ -30,10 +22,10 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
                 new string[]
                 {
                     "admin",
-                    "register employee",
-                    "edit employee",
-                    "delete employee",
-                    "check employee",
+                    //"register employee",
+                    //"edit employee",
+                    //"delete employee",
+                    //"check employee",
                     "card home",
                     "purchase card",
                     "delete card",
@@ -41,14 +33,14 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
                     "check card",
                     "edit card",
                     "prize home",
-                    "claim prize",
+                    //"claim prize",
                     "add prize amount",
                     "add prize",
                     "edit prize",
                     "delete prize",
                     "game home",
                     "add game",
-                    "check game",
+                    //"check game",
                 }
             },
         }
@@ -61,13 +53,14 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
                 "HR Manager",
                 new string[]
                 {
-                    "register employee",
-                    "edit employee",
-                    "delete employee",
-                    "check employee",
+                    "admin",
+                    //"register employee",
+                    //"edit employee",
+                    //"delete employee",
+                    //"check employee",
                 }
             },
-            { "HR Assistant", new string[] { "login", "home", "check employee" } },
+            { "HR Assistant", new string[] { /*"login", "home",*/ "check employee" } },
         }
     },
     {
@@ -82,7 +75,7 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
                     "purchase card",
                     "delete card",
                     "recharge card",
-                    "check card",
+                    //"check card",
                     "edit card",
                 }
             },
@@ -101,22 +94,22 @@ Dictionary<string, Dictionary<string, string[]>> depts = new()
                 new string[]
                 {
                     "prize home",
-                    "claim prize",
+                    //"claim prize",
                     "add prize amount",
                     "add prize",
                     "edit prize",
                     "delete prize",
                 }
             },
-            { "Prize Assistant", new string[] { "prize home", "claim prize" } },
+            { "Prize Assistant", new string[] { "prize home"/*, "claim prize"*/ } },
         }
     },
     {
         "Juegos",
         new Dictionary<string, string[]>
         {
-            { "Game Manager", new string[] { "game home", "add game", "check game" } },
-            { "Operator", new string[] { "game home", "check game" } },
+            { "Game Manager", new string[] { "game home", "add game"/*, "check game"*/ } },
+            { "Operator", new string[] { "game home"/*, "check game"*/ } },
         }
     },
 };
@@ -653,26 +646,31 @@ purchaseCard
 
                 string rutaPDF = "CheckPoint.pdf"; // Ruta del PDF
 
-        try
-        {
-            using (PdfReader lector = new PdfReader(rutaPDF))
-            {
-                string textoCompleto = "Hola Simona la mona jajajaja";
-                for (int i = 1; i <= lector.NumberOfPages; i++)
+                try
                 {
-                    textoCompleto += ITextExtractionStrategy.ReferenceEquals(lector, i);
-                }
+                    using (PdfReader lector = new PdfReader(rutaPDF))
+                    {
+                        string textoCompleto = "Hola Simona la mona jajajaja";
+                        for (int i = 1; i <= lector.NumberOfPages; i++)
+                        {
+                            textoCompleto += ITextExtractionStrategy.ReferenceEquals(lector, i);
+                        }
 
-                Console.WriteLine("Texto extraído del PDF:\n");
-                Console.WriteLine(textoCompleto);
+                        Console.WriteLine("Texto extraído del PDF:\n");
+                        Console.WriteLine(textoCompleto);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error al leer el PDF: " + ex.Message);
+                }
+            }
+            catch
+            {
+
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error al leer el PDF: " + ex.Message);
-        }
-            }
-        }
+
         /*
                 string rutaImagen = "720120.jpg";
                 iTextSharp.text.Image imagen = iTextSharp.text.Image.GetInstance(rutaImagen);
@@ -836,7 +834,8 @@ gameHome = layout.CreatePage(
                     $"{g["ID"]}    {g["NAME"]} {g["TYPE"]}    {g["PRICE"]}",
                     ("link", $"{checkGame.key}")
                 )
-                .SetAction(() => {
+                .SetAction(() =>
+                {
                     /*selectedGame = new Game(Convert.ToInt32(g["ID"]), g["NAME"]?.ToString() ?? "", g["TYPE"]?.ToString() ?? "", g["STATUS"]?.ToString() ?? "", Convert.ToInt32(g["CAPACITY"]), Convert.ToSingle(g["PRICE"]));*/
                 });
         }
@@ -867,6 +866,4 @@ addGame = layout.CreatePage("add game");
 checkGame = layout.CreatePage("check game");
 
 admin.InsertLink(ConsoleKey.F1, registerEmployee);
-admin.InsertLink(ConsoleKey.F2, editEmployee);
-admin.InsertLink(ConsoleKey.F3, deleteEmployee);
 layout.wind.Execute();
