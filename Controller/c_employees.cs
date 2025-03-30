@@ -427,5 +427,6 @@ public class C_Employees : Controller
                     }
                 }
             );
+        admin.InsertLink(ConsoleKey.F1, registerEmployee);
     }
 }
