@@ -114,6 +114,46 @@ public class C_Playcards : Controller
             );
 
         rechargeCard = layout.CreatePage("recharge card");
+rechargeCard
+    .SearchLabel<Form>("RECHARGECARD")
+    ?.SetAction(
+        (form, data) =>
+        {
+            var tarjeta = modelPlaycards.Read($"ID = {data["ID"]}");
+            if (tarjeta.Count == 0)
+            {
+                form.SetWarning("No existe una tarjeta con este ID.");
+                return;
+            }
+
+            float saldoActual = Convert.ToSingle(tarjeta[0]["BALANCE"]);
+            float recarga = Convert.ToSingle(data["BALANCE"]);
+
+            if (recarga <= 0)
+            {
+                form.SetWarning("El monto a recargar debe ser mayor a 0.");
+                return;
+            }
+
+            float nuevoSaldo = saldoActual + recarga;
+
+            bool actualizado = modelPlaycards.Update(
+                $"BALANCE = {nuevoSaldo}",
+                $"ID = {data["ID"]}"
+            );
+
+            if (actualizado)
+            {
+
+                form.page?.wind.BackLoadPage();
+            }
+            else
+            {
+                form.SetWarning("Error al actualizar el saldo.");
+            }
+        }
+    );
+
 
         checkCard = layout.CreatePage("check card");
 
