@@ -34,6 +34,27 @@ public class C_Playcards : Controller
         }
     }
 );
+        if(cardHome.SearchLabel<Form>("SEARCHCARD") is Form search) {
+            search.SetAction((form, data) => {
+                var cards = modelPlaycards.Read($"ID = {data["ID"]}");
+                if(cards.Count <= 0) 
+                {
+                    form.SetWarning("No existe esta tarjeta con este ID.");
+                    return;
+                }
+                var card = cards[0];
+                selectcard = new Playcard(
+                    Convert.ToInt32(card["ID"]),
+                    card["STATUS"] + "",
+                    Convert.ToInt32(card["BALANCE"]),
+                    Convert.ToInt32(card["POINTS"]),
+                    card["ISSUEDATE"]+ "",
+                    card["EXPDATE"]+ ""
+                );
+                form.page?.wind.LoadPage(editCard);
+
+            });
+        }
 
         purchaseCard = layout.CreatePage("purchase card");
         purchaseCard
@@ -157,6 +178,10 @@ rechargeCard
 
         checkCard = layout.CreatePage("check card");
 
-        editCard = layout.CreatePage("edit card");
+        editCard = layout.CreatePage("edit card", (page) => {
+            page.SearchLabel<Input>("STATUS")?.SetProperty("value", selectcard?.Status ?? "");
+             page.SearchLabel<Input>("BALANCE")?.SetProperty("value", selectcard?.Balance + "" ?? "");
+             page.SearchLabel<Input>("POINTS")?.SetProperty("value", selectcard?.Points + "" ?? "");
+        }); 
     }
 }
