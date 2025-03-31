@@ -25,8 +25,8 @@ public class AddPrizeAmountPage : Page
     public AddPrizeAmountPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("AGREGAR CANTIDAD DE PREMIOS");
         Form amountform = InsertLabel<Form>("", ("name", "AMOUNTFORM"));
-        amountform.InsertChild<Input>("ID:", ("type", "number"), ("name", "ID"));
-        amountform.InsertChild<Input>("CANTIDAD:", ("type", "number"), ("name", "AMOUNT"));
+        amountform.InsertChild<Input>("ID:", ("type", "number"), ("name", "ID"), ("required", "true"));
+        amountform.InsertChild<Input>("CANTIDAD:", ("type", "number"), ("name", "AMOUNT"), ("required", "true"));
         amountform.InsertChild<Input>("Agregar", ("type", "submit"));
     }
 }
