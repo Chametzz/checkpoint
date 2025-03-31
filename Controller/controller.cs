@@ -133,8 +133,10 @@ public class Controller
     protected static Employee? Empleado = null;
     protected static Employee? selectemp = null;
     protected static Prizes? prize = null;
+    protected static Prizes? selectprize = null;
+    protected static Playcard? selectcard = null;
     public Controller()
     {
-
+        
     }
 }

@@ -2,6 +2,9 @@ public class CardHomePage : Page
 {
     public CardHomePage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("PLAYCARDS");
+        Form search = InsertLabel<Form>("Buscar tarjeta", ("name", "SEARCHCARD"));
+        search.InsertChild<Input>("ID:", ("type", "number"), ("name", "ID"), ("required", "true"));
+        search.InsertChild<Input>("Buscar", ("type", "submit"));
         InsertLabel<Table>("", ("name", "TABLEINFO"));
     }
 }
