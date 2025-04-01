@@ -67,7 +67,7 @@ public class C_Playcards : Controller
                         $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'"
                     );
 
-                    string ruta = "documento.pdf"; // Ruta donde se guardará el PDF
+                    string ruta = "C:UsersandymOneDriveEscritorioTargetas"; // Ruta donde se guardará el PDF
 
                     // Crear el documento PDF
                     Document doc = new Document();
@@ -81,15 +81,15 @@ public class C_Playcards : Controller
                         doc.Open();
 
                         // Agregar un título
+                        doc.AddTitle("Hola Que tal");
 
-
-                        string rutaPDF = "CheckPoint.pdf"; // Ruta del PDF
+                        string rutaPDF = ""; // Ruta del PDF
 
                         try
                         {
                             using (PdfReader lector = new PdfReader(rutaPDF))
                             {
-                                string textoCompleto = "Hola Simona la mona jajajaja";
+                                string textoCompleto = "Se ha creado el PDF correctamente";
                                 for (int i = 1; i <= lector.NumberOfPages; i++)
                                 {
                                     textoCompleto += ITextExtractionStrategy.ReferenceEquals(lector, i);
