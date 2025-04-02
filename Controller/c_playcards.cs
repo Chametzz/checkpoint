@@ -55,7 +55,7 @@ public class C_Playcards : Controller
 
             });
         }
-
+{
         purchaseCard = layout.CreatePage("purchase card");
         purchaseCard
             .SearchLabel<Form>("CARDFORM")
@@ -67,47 +67,31 @@ public class C_Playcards : Controller
                         $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'"
                     );
 
-                    string ruta = "C:UsersandymOneDriveEscritorioTargetas"; // Ruta donde se guardará el PDF
+                    GeneratePDF(data["ID"].ToString(), data["BALANCE"].ToString());
+                    
+                });
 
-                    // Crear el documento PDF
-                    Document doc = new Document();
+            string imagePath = "0.jpg";
+            string outputPath = $"Targeta{"ID"}.pdf";
+            Document doc = new Document();
+            PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+            doc.Open();
 
-                    try
-                    {
-                        // Crear el escritor que guardará el PDF en la ruta especificada
-                        PdfWriter.GetInstance(doc, new FileStream(ruta, FileMode.Create));
+            doc.Add(new Paragraph("ID: " + data["ID"]));
+            doc.Add(new Paragraph("Estado: ACTIVA"));
+            doc.Add(new Paragraph("Saldo: " + data["BALANCE"]));
+            doc.Add(new Paragraph("Puntos: 0"));
+            doc.Add(new Paragraph("Fecha de inicio: " + DateTime.Now.ToString("yyyy-MM-dd")));
+            doc.Add(new Paragraph("Fecha de expiración: 2050-10-10"));
 
-                        // Abrir el documento para escribir
-                        doc.Open();
+            Image img = Image.GetInstance(imagePath);
+            img.SetAbsolutePosition(50, 500);
+            img.ScaleToFit(200, 200);
+            doc.Add(img);
 
-                        // Agregar un título
-                        doc.AddTitle("Hola Que tal");
+            doc.Close();
+            Console.WriteLine("✅ PDF generado: " + outputPath);
 
-                        string rutaPDF = ""; // Ruta del PDF
-
-                        try
-                        {
-                            using (PdfReader lector = new PdfReader(rutaPDF))
-                            {
-                                string textoCompleto = "Se ha creado el PDF correctamente";
-                                for (int i = 1; i <= lector.NumberOfPages; i++)
-                                {
-                                    textoCompleto += ITextExtractionStrategy.ReferenceEquals(lector, i);
-                                }
-
-                                Console.WriteLine("Texto extraído del PDF:\n");
-                                Console.WriteLine(textoCompleto);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine("Error al leer el PDF: " + ex.Message);
-                        }
-                    }
-                    catch
-                    {
-
-                    }
                 }
             );
 
