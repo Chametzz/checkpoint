@@ -34,10 +34,12 @@ public class C_Playcards : Controller
         }
     }
 );
-        if(cardHome.SearchLabel<Form>("SEARCHCARD") is Form search) {
-            search.SetAction((form, data) => {
+        if (cardHome.SearchLabel<Form>("SEARCHCARD") is Form search)
+        {
+            search.SetAction((form, data) =>
+            {
                 var cards = modelPlaycards.Read($"ID = {data["ID"]}");
-                if(cards.Count <= 0) 
+                if (cards.Count <= 0)
                 {
                     form.SetWarning("No existe esta tarjeta con este ID.");
                     return;
@@ -48,8 +50,8 @@ public class C_Playcards : Controller
                     card["STATUS"] + "",
                     Convert.ToInt32(card["BALANCE"]),
                     Convert.ToInt32(card["POINTS"]),
-                    card["ISSUEDATE"]+ "",
-                    card["EXPDATE"]+ ""
+                    card["ISSUEDATE"] + "",
+                    card["EXPDATE"] + ""
                 );
                 form.page?.wind.LoadPage(editCard);
 
@@ -67,6 +69,7 @@ public class C_Playcards : Controller
                         $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'"
                     );
 
+<<<<<<< HEAD
                     GeneratePDF(data["ID"].ToString(), data["BALANCE"].ToString());
                     
                 });
@@ -92,6 +95,48 @@ public class C_Playcards : Controller
             doc.Close();
             Console.WriteLine("✅ PDF generado: " + outputPath);
 
+=======
+                    //string ruta = "C:UsersandymOneDriveEscritorioTargetas"; // Ruta donde se guardará el PDF
+
+                    // Crear el documento PDF
+                    int id = Convert.ToInt32(modelPlaycards.Read()[^1]["ID"]);
+                    string outputPath = $"keycard - {id}.pdf";
+                    try
+                    {
+                        /*using (FileStream stream = new FileStream(outputPath, FileMode.Create))
+                        {
+                            Document doc = new Document(PageSize.A4.Rotate());
+                            PdfWriter.GetInstance(doc, stream);
+                            doc.Open();
+                            Image img = Image.GetInstance("0.jpg");
+                            img.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
+                            img.SetAbsolutePosition(0, 0);
+                            doc.Add(img);
+                            doc.Close();
+                        }*/
+                        Image img = Image.GetInstance("1.jpeg");
+                        Document doc = new Document(new Rectangle(img.Width, img.Height));
+                        PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
+                        doc.AddTitle("KEYCARD");
+                        doc.AddCreator("checkpoint");
+                        doc.Open();
+                        doc.Add(img);
+                        img.SetAbsolutePosition(0, 0);
+                        img.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
+                        doc.Add(img);
+                        PdfContentByte canvas = writer.DirectContent;
+                        Font font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 500, BaseColor.BLUE);
+                        Phrase phrase = new Phrase($"{id}");
+                        ColumnText.ShowTextAligned(canvas, Element.ALIGN_CENTER, phrase, img.Width / 2, img.Height / 2, 0);
+                        doc.Close();
+                        writer.Close();
+                    }
+                    catch
+                    {
+
+                    }
+                    form.page?.wind.BackLoadPage();
+>>>>>>> 2f40de11304faf0725bf8df6a68a73542662d88d
                 }
             );
 
@@ -119,53 +164,67 @@ public class C_Playcards : Controller
             );
 
         rechargeCard = layout.CreatePage("recharge card");
-rechargeCard
-    .SearchLabel<Form>("RECHARGECARD")
-    ?.SetAction(
-        (form, data) =>
-        {
-            var tarjeta = modelPlaycards.Read($"ID = {data["ID"]}");
-            if (tarjeta.Count == 0)
+        rechargeCard
+        .SearchLabel<Form>("RECHARGECARD")
+        ?.SetAction(
+            (form, data) =>
             {
-                form.SetWarning("No existe una tarjeta con este ID.");
-                return;
+                var tarjeta = modelPlaycards.Read($"ID = {data["ID"]}");
+                if (tarjeta.Count == 0)
+                {
+                    form.SetWarning("No existe una tarjeta con este ID.");
+                    return;
+                }
+
+                float saldoActual = Convert.ToSingle(tarjeta[0]["BALANCE"]);
+                float recarga = Convert.ToSingle(data["BALANCE"]);
+
+                if (recarga <= 0)
+                {
+                    form.SetWarning("El monto a recargar debe ser mayor a 0.");
+                    return;
+                }
+
+                float nuevoSaldo = saldoActual + recarga;
+
+                bool actualizado = modelPlaycards.Update(
+                    $"BALANCE = {nuevoSaldo}",
+                    $"ID = {data["ID"]}"
+                );
+
+                if (actualizado)
+                {
+
+                    form.page?.wind.BackLoadPage();
+                }
+                else
+                {
+                    form.SetWarning("Error al actualizar el saldo.");
+                }
             }
-
-            float saldoActual = Convert.ToSingle(tarjeta[0]["BALANCE"]);
-            float recarga = Convert.ToSingle(data["BALANCE"]);
-
-            if (recarga <= 0)
-            {
-                form.SetWarning("El monto a recargar debe ser mayor a 0.");
-                return;
-            }
-
-            float nuevoSaldo = saldoActual + recarga;
-
-            bool actualizado = modelPlaycards.Update(
-                $"BALANCE = {nuevoSaldo}",
-                $"ID = {data["ID"]}"
-            );
-
-            if (actualizado)
-            {
-
-                form.page?.wind.BackLoadPage();
-            }
-            else
-            {
-                form.SetWarning("Error al actualizar el saldo.");
-            }
-        }
-    );
+        );
 
 
         checkCard = layout.CreatePage("check card");
 
-        editCard = layout.CreatePage("edit card", (page) => {
+        editCard = layout.CreatePage("edit card", (page) =>
+        {
             page.SearchLabel<Input>("STATUS")?.SetProperty("value", selectcard?.Status ?? "");
-             page.SearchLabel<Input>("BALANCE")?.SetProperty("value", selectcard?.Balance + "" ?? "");
-             page.SearchLabel<Input>("POINTS")?.SetProperty("value", selectcard?.Points + "" ?? "");
-        }); 
+            page.SearchLabel<Input>("BALANCE")?.SetProperty("value", selectcard?.Balance + "" ?? "");
+            page.SearchLabel<Input>("POINTS")?.SetProperty("value", selectcard?.Points + "" ?? "");
+        });
+        Form? editForm = editCard.SearchLabel<Form>("EDITCARD");
+        if (editForm != null)
+        {
+            editForm.SetAction((form, data) =>
+            {
+                Console.WriteLine(selectcard);
+                if (selectcard != null)
+                {
+                    modelPlaycards.Update($"STATUS = '{data["STATUS"]}', BALANCE = {data["BALANCE"]}, POINTS = {data["POINTS"]}", $"ID = {selectcard.Id}");
+                }
+                form.page?.wind.BackLoadPage();
+            });
+        }
     }
 }

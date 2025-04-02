@@ -39,7 +39,7 @@ public class Window {
     }
     public void BackLoadPage() {//Te regresa a la página anterior y la carga
         log.Pop();
-        log.Peek().Draw();
+        log.Peek().Load();
     }
     public void BackRefreshPage() {//Te regresa a la página anterior y solo la vuelve a dibujar
         log.Pop();

@@ -55,10 +55,11 @@ public class CheckCardPage : Page
 public class EditCardPage : Page
 {
     public EditCardPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
-        Form register = InsertLabel<Form>("Actualiza los campos de la tarjeta:", ("name", "EDITCARD"));
-        register.InsertChild<Input>("Estado:", ("type", "text"), ("name", "STATUS"), ("required", "true"));
-        register.InsertChild<Input>("Balance:", ("type", "number"), ("name", "BALANCE"), ("required", "true"));
-        register.InsertChild<Input>("Puntos:", ("type", "number"), ("name", "POINTS"), ("required", "true"));
-        register.InsertChild<Input>("Editar", ("type", "submit"));
+        SetTitle("EDITAR TARJETA");
+        Form edit = InsertLabel<Form>("Actualiza los campos de la tarjeta:", ("name", "EDITCARD"));
+        edit.InsertChild<Input>("Estado:", ("type", "text"), ("name", "STATUS"), ("required", "true"));
+        edit.InsertChild<Input>("Balance:", ("type", "number"), ("name", "BALANCE"), ("required", "true"));
+        edit.InsertChild<Input>("Puntos:", ("type", "number"), ("name", "POINTS"), ("required", "true"));
+        edit.InsertChild<Input>("Editar", ("type", "submit"));
     }
 }
