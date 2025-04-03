@@ -84,6 +84,12 @@ public class C_Employees : Controller
             "admin",
             (page) =>
             {
+                var emps = modelEmployee.Read();
+                double nomina = 0f;
+                for (int i = 0; i < emps.Count; i++) {
+                    nomina += Convert.ToSingle(emps[i]["SALARY"]);
+                }
+                page.SetRef("nomina", $"Nómina: ${nomina}");
                 page.SetRef("money", $"Ganancia: ${money}");
                 Table? info = admin.SearchLabel<Table>("TABLEINFO");
                 Selector? workdep = admin.SearchLabel<Selector>("WORKDEP");
@@ -119,7 +125,7 @@ public class C_Employees : Controller
                 emp?.childs.Clear();
                 if (emp != null && workdep != null && job != null)
                 {
-                    var emps = modelEmployee.Read();
+                    //var emps = modelEmployee.Read();
                     foreach (var employee in emps)
                     {
                         if (

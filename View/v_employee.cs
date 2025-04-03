@@ -36,6 +36,7 @@ public class AdminPage : Page {
         SetTitle("ADMINISTRACIÓN");
         //InsertLabel<Label>("Nómina: ")
         InsertLabel<Label>("Ganancias: ", ("ref", "money"));
+        InsertLabel<Label>("Nómina: ", ("ref", "nomina"));
         InsertLabel<Selector>("Seleccione un departamento", ("name", "WORKDEP"));
         InsertLabel<Selector>("Seleccione un departamento", ("name", "JOB"));
         InsertLabel<Table>("", ("name", "TABLEINFO"));
