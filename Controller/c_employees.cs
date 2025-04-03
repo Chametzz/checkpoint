@@ -84,6 +84,7 @@ public class C_Employees : Controller
             "admin",
             (page) =>
             {
+                page.SetRef("money", $"Ganancia: ${money}");
                 Table? info = admin.SearchLabel<Table>("TABLEINFO");
                 Selector? workdep = admin.SearchLabel<Selector>("WORKDEP");
                 Selector? job = admin.SearchLabel<Selector>("JOB");

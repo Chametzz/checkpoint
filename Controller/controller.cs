@@ -47,13 +47,13 @@ public class Controller
                         "purchase card",
                         "delete card",
                         "recharge card",
-                        "check card",
+                        //"check card",
                         "edit card",
                         "prize home",
                         //"claim prize",
                         "add prize amount",
                         "add prize",
-                        "edit prize",
+                        //"edit prize",
                         "delete prize",
                         "game home",
                         "add game",
@@ -93,7 +93,7 @@ public class Controller
                         "delete card",
                         "recharge card",
                         //"check card",
-                        "edit card",
+                        //"edit card",
                     }
                 },
                 {
@@ -114,7 +114,7 @@ public class Controller
                         //"claim prize",
                         "add prize amount",
                         "add prize",
-                        "edit prize",
+                        //"edit prize",
                         "delete prize",
                     }
                 },
@@ -135,6 +135,8 @@ public class Controller
     protected static Prizes? prize = null;
     protected static Prizes? selectprize = null;
     protected static Playcard? selectcard = null;
+    //NOMINA
+    public static float money;
     public Controller()
     {
         

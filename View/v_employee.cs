@@ -34,6 +34,8 @@ public class HomePage : Page
 public class AdminPage : Page {
     public AdminPage(Window wind, string key, Action<Page>? toLoad = null) : base(wind, key, toLoad) {
         SetTitle("ADMINISTRACIÓN");
+        //InsertLabel<Label>("Nómina: ")
+        InsertLabel<Label>("Ganancias: ", ("ref", "money"));
         InsertLabel<Selector>("Seleccione un departamento", ("name", "WORKDEP"));
         InsertLabel<Selector>("Seleccione un departamento", ("name", "JOB"));
         InsertLabel<Table>("", ("name", "TABLEINFO"));

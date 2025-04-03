@@ -68,36 +68,8 @@ public class C_Playcards : Controller
                         "STATUS, BALANCE, POINTS, ISSUEDATE, EXPDATE",
                         $"'ACTIVA', {Convert.ToSingle(data["BALANCE"])}, 0, '{DateTime.Now.ToString("yyyy-MM-dd")}', '2050-10-10'"
                     );
-
-<<<<<<< HEAD
-                    GeneratePDF(data["ID"].ToString(), data["BALANCE"].ToString());
-                    
-                });
-
-            string imagePath = "0.jpg";
-            string outputPath = $"Targeta{"ID"}.pdf";
-            Document doc = new Document();
-            PdfWriter.GetInstance(doc, new FileStream(outputPath, FileMode.Create));
-            doc.Open();
-
-            doc.Add(new Paragraph("ID: " + data["ID"]));
-            doc.Add(new Paragraph("Estado: ACTIVA"));
-            doc.Add(new Paragraph("Saldo: " + data["BALANCE"]));
-            doc.Add(new Paragraph("Puntos: 0"));
-            doc.Add(new Paragraph("Fecha de inicio: " + DateTime.Now.ToString("yyyy-MM-dd")));
-            doc.Add(new Paragraph("Fecha de expiración: 2050-10-10"));
-
-            Image img = Image.GetInstance(imagePath);
-            img.SetAbsolutePosition(50, 500);
-            img.ScaleToFit(200, 200);
-            doc.Add(img);
-
-            doc.Close();
-            Console.WriteLine("✅ PDF generado: " + outputPath);
-
-=======
                     //string ruta = "C:UsersandymOneDriveEscritorioTargetas"; // Ruta donde se guardará el PDF
-
+                    money += Convert.ToSingle(data["BALANCE"]);
                     // Crear el documento PDF
                     int id = Convert.ToInt32(modelPlaycards.Read()[^1]["ID"]);
                     string outputPath = $"keycard - {id}.pdf";
@@ -125,9 +97,11 @@ public class C_Playcards : Controller
                         img.ScaleToFit(doc.PageSize.Width, doc.PageSize.Height);
                         doc.Add(img);
                         PdfContentByte canvas = writer.DirectContent;
-                        Font font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 500, BaseColor.BLUE);
-                        Phrase phrase = new Phrase($"{id}");
-                        ColumnText.ShowTextAligned(canvas, Element.ALIGN_CENTER, phrase, img.Width / 2, img.Height / 2, 0);
+                        Font font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 35, BaseColor.BLUE);
+                        Phrase phrase = new Phrase($"{id}", font);
+                        float xPos = img.Width * 0.26f; // 60% del ancho de la imagen
+                        float yPos = img.Height * 0.44f; // 30% de la altura de la imagen
+                        ColumnText.ShowTextAligned(canvas, Element.ALIGN_CENTER, phrase, xPos, yPos, 0);
                         doc.Close();
                         writer.Close();
                     }
@@ -136,9 +110,8 @@ public class C_Playcards : Controller
 
                     }
                     form.page?.wind.BackLoadPage();
->>>>>>> 2f40de11304faf0725bf8df6a68a73542662d88d
                 }
-            );
+    );
 
         deleteCard = layout.CreatePage("delete card");
         deleteCard
@@ -226,5 +199,6 @@ public class C_Playcards : Controller
                 form.page?.wind.BackLoadPage();
             });
         }
+    }
     }
 }
