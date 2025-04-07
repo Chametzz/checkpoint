@@ -219,6 +219,12 @@ public class C_Prizes : Controller
                     form.page?.wind?.BackLoadPage();
                 }
             );
-        editPrize = layout.CreatePage("edit prize");
+        editPrize = layout.CreatePage("edit prize", (page) => {
+            if(selectprize != null) {
+                page.SearchLabel<Input>("NAME")?.SetProperty("value", selectprize.Name);
+                page.SearchLabel<Input>("PRICE")?.SetProperty("value", selectprize.Price + "");
+                page.SearchLabel<Input>("AMOUNT")?.SetProperty("value", selectprize.Amount + "");
+            }
+        });
     }
 }

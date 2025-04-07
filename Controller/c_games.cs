@@ -24,13 +24,14 @@ public class C_Games : Controller
                 }
 
                 // Tabla con la información de los juegos
-                Table? info = gameHome.SearchLabel<Table>("TABLEINFO")?.SetColumns(5);
+                Table? info = gameHome.SearchLabel<Table>("TABLEINFO")?.SetColumns(6);
                 if (info != null)
                 {
                     info.childs.Clear();
                     info.InsertChild<Label>("ID");
                     info.InsertChild<Label>("NAME");
                     info.InsertChild<Label>("TYPE");
+                    info.InsertChild<Label>("STATUS");
                     info.InsertChild<Label>("CAPACITY");
                     info.InsertChild<Label>("PRICE");
 
@@ -39,6 +40,7 @@ public class C_Games : Controller
                         info.InsertChild<Label>($"{game["ID"]}");
                         info.InsertChild<Label>($"{game["NAME"]}");
                         info.InsertChild<Label>($"{game["TYPE"]}");
+                        info.InsertChild<Label>($"{game["STATUS"]}");
                         info.InsertChild<Label>($"{game["CAPACITY"]}");
                         info.InsertChild<Label>($"{game["PRICE"]}");
                     }
@@ -46,6 +48,12 @@ public class C_Games : Controller
             }
         );
         addGame = layout.CreatePage("add game");
+        if(addGame.SearchLabel<Form>("ADDGAME") is Form addForm) {
+            addForm.SetAction((form, data) => {
+                modelGames.Create($"NAME, TYPE, STATUS, CAPACITY, PRICE", $"'{data["NAME"]}', '{data["TYPE"]}', '{data["STATUS"]}', {data["CAPACITY"]}, {data["PRICE"]}");
+                form.page?.wind.BackLoadPage();
+            });
+        }
         checkGame = layout.CreatePage("check game");
     }
 }
