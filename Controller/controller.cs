@@ -135,6 +135,7 @@ public class Controller
     protected static Prizes? prize = null;
     protected static Prizes? selectprize = null;
     protected static Playcard? selectcard = null;
+    protected static Games? selectedGame = null;
     //NOMINA
     public static float money;
     public Controller()

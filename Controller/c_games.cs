@@ -19,7 +19,7 @@ public class C_Games : Controller
                         )
                         .SetAction(() =>
                         {
-                            /*selectedGame = new Game(Convert.ToInt32(g["ID"]), g["NAME"]?.ToString() ?? "", g["TYPE"]?.ToString() ?? "", g["STATUS"]?.ToString() ?? "", Convert.ToInt32(g["CAPACITY"]), Convert.ToSingle(g["PRICE"]));*/
+                            selectedGame = new Games(Convert.ToInt32(g["ID"]), g["NAME"]?.ToString() ?? "", g["TYPE"]?.ToString() ?? "", g["STATUS"]?.ToString() ?? "", Convert.ToInt32(g["CAPACITY"]), Convert.ToSingle(g["PRICE"]));
                         });
                 }
 
@@ -54,6 +54,15 @@ public class C_Games : Controller
                 form.page?.wind.BackLoadPage();
             });
         }
-        checkGame = layout.CreatePage("check game");
+        checkGame = layout.CreatePage("check game", (page) => {
+            if(selectedGame != null) {
+                page.SetRef("id", $"ID: {selectedGame.Id}");
+                page.SetRef("name", $"Nombre: {selectedGame.Name}");
+                page.SetRef("type", $"Tipo: {selectedGame.Type}");
+                page.SetRef("status", $"Estado: {selectedGame.Status}");
+                page.SetRef("capacity", $"Capacidad: {selectedGame.Capacity}");
+                page.SetRef("price", $"Precio: {selectedGame.Price}");
+            }
+        });
     }
 }
